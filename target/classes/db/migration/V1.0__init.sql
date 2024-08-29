@@ -1,0 +1,71 @@
+
+CREATE SEQUENCE shared_sequence
+    START WITH 4
+    INCREMENT BY 1;
+
+------------------------------------
+------ARTICLE LIKE DISLIKE TRIGGER----------
+------------------------------------
+-- create or replace function article_like_function()
+--     returns trigger as
+-- $$
+-- begin
+--     if tg_op = 'INSERT' then
+--         if new.article_like = 'LIKED' then
+--             UPDATE article set like_count = like_count + 1 where id = new.article_id;
+--         elsif new.article_like = 'DISLIKED' then
+--             UPDATE article set dislike_count = dislike_count + 1 where id = new.article_id;
+--         end if;
+--
+--     elsif tg_op = 'DELETE' then
+--         if old.article_like = 'LIKED' then
+--             UPDATE article set like_count = like_count - 1 where id = old.article_id;
+--         elsif old.article_like = 'DISLIKED' then
+--             UPDATE article set dislike_count = dislike_count - 1 where id = old.article_id;
+--         end if;
+--
+--     elsif tg_op = 'UPDATE' then
+--         if old.article_like = 'LIKED' and new.article_like = 'DISLIKED' then
+--             UPDATE article set dislike_count = dislike_count + 1, like_count = like_count - 1 where id = new.article_id;
+--
+--         elsif old.article_like = 'DISLIKED' and new.article_like = 'LIKED' then
+--             UPDATE article set dislike_count = dislike_count - 1, like_count = like_count + 1 where id = new.article_id;
+--
+--         end if;
+--
+--     end if;
+--     return null;
+-- end;
+-- $$ language plpgsql;
+--
+--
+-- create or replace trigger article_like_trigger
+--     after INSERT or DELETE or UPDATE
+--     on article_like
+--     for each row
+-- execute function article_like_function();
+--
+-- ------------------------------------
+-- ------ARTICLE VIEW TRIGGER----------
+-- ------------------------------------
+-- create or replace function article_view_function()
+--     returns trigger as
+-- $$
+-- begin
+--     if tg_op = 'INSERT' then
+--         update article set view_count = view_count + 1 where id = new.article_id;
+--     end if;
+--     return null;
+-- end;
+-- $$
+--     language plpgsql;
+--
+-- create or replace trigger article_view_trigger
+--     after insert
+--     on article_view
+--     for each row
+-- execute function article_view_function();
+
+
+-- drop function article_like_function() cascade;
+-- drop trigger article_like_trigger;
