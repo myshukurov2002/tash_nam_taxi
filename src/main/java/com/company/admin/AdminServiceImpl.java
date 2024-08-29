@@ -22,10 +22,12 @@ import org.telegram.telegrambots.meta.api.methods.groupadministration.BanChatMem
 import org.telegram.telegrambots.meta.api.methods.groupadministration.CreateChatInviteLink;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.UnbanChatMember;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.*;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeAllGroupChats;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -50,6 +52,14 @@ public class AdminServiceImpl implements AdminService {
     private String ADMIN_USERNAME;
     @Value("${taxi.group.id}")
     private Long TAXI_GROUP_ID;
+    @Value("${card.number}")
+    private String CARD_NUMBER;
+    @Value("${card.owner}")
+    private String CARD_OWNER;
+    @Value("${taxi.price}")
+    private String TAXI_PRICE;
+    @Value("${state.duration}")
+    private Integer DURATION;
 
     @Transactional
     @Override
@@ -58,23 +68,57 @@ public class AdminServiceImpl implements AdminService {
         String[] words = text.split(" ");
         Long adminId = admin.getChatId();
 
-        switch (words[0]) {
-            case AdminComponents.BAN -> {
-                banTaxi(Long.valueOf(words[1]));
-                senderService.sendMessage(adminId, SUCCESS);
+        try {
+            switch (words[0]) {
+                case AdminComponents.BAN -> {
+                    banTaxi(Long.valueOf(words[1]));
+                    senderService.sendMessage(adminId, SUCCESS);
+                }
+                case AdminComponents.UNBAN -> {
+                    unbanTaxi(Long.valueOf(words[1]));
+                    senderService.sendMessage(adminId, SUCCESS);
+                }
+                case AdminComponents.ADD_DURATION -> {
+                    addDuration(Integer.parseInt(words[1]), Long.valueOf(words[2]));
+                    senderService.sendMessage(adminId, SUCCESS);
+                }
+                case AdminComponents.GET -> {
+                    getInfo(Long.valueOf(words[1]), adminId);
+                }
+                case AdminComponents.SEND -> {
+//                    sendMessage(words[1], words[2])
+                }
+                case AdminComponents.CARD -> {
+                    sendCard(Long.valueOf(words[1]));
+                }
+                default -> {
+                    senderService.sendMessage(adminId, WRONG_ANSWER);
+                }
             }
-            case AdminComponents.UNBAN -> {
-                unbanTaxi(Long.valueOf(words[1]));
-                senderService.sendMessage(adminId, SUCCESS);
-            }
-            case AdminComponents.ADD_DURATION -> {
-                addDuration(Long.valueOf(words[1]), Integer.parseInt(words[2]));
-                senderService.sendMessage(adminId, SUCCESS);
-            }
-            case AdminComponents.GET -> {
-                getInfo(Long.valueOf(words[1]), adminId);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
         }
+    }
+
+    private void sendCard(Long chatId) {
+        UserEntity userById = authService.getUserById(chatId);
+        StringBuilder amount = new StringBuilder()
+                .append(AdminComponents.SHOULD_PAY)
+                .append("\n\n")
+                .append(AdminComponents.CARD_OWNER)
+                .append(CARD_OWNER)
+                .append("\n")
+                .append(AdminComponents.CARD_NUMBER)
+                .append(CARD_NUMBER)
+                .append("\n")
+                .append(AdminComponents.TAXI_PRICE)
+                .append(TAXI_PRICE)
+                .append("\n\n").
+                append("Admin: ")
+                .append(ADMIN_USERNAME);
+        senderService.sendMenu(userById, amount.toString());
     }
 
     private void getInfo(Long taxiId, Long chatId) {
@@ -82,11 +126,14 @@ public class AdminServiceImpl implements AdminService {
         taxiService.getInfo(taxi, chatId);
     }
 
-    private void addDuration(Long taxiId, int duration) {
+    private void addDuration(int duration, Long taxiId) {
         TaxiEntity taxi = taxiService.getById(taxiId);
         taxi.setDuration(duration);
+        taxi.setStatus(true);
         taxiService.save(taxi);
-        senderService.sendMessage(taxiId, AdminComponents.DURATION_EXTENDED + taxi.getDuration() + "kun");
+
+        UserEntity userById = authService.getUserById(taxiId);
+        senderService.sendMenu(userById, AdminComponents.DURATION_EXTENDED + taxi.getDuration() + "kun");
     }
 
     @Override
@@ -107,11 +154,12 @@ public class AdminServiceImpl implements AdminService {
                 switch (isApprove) {
                     case Components.APPROVE -> {
                         taxi.setStatus(true);
-                        taxi.setDuration(taxi.getDuration() + 30);
+                        taxi.setDuration(taxi.getDuration() + DURATION);
                         taxiService.updateStatus(taxi);
                         senderService.answerInlineButton(callbackQuery.getId(), APPROVE);
 //                        senderService.sendMessage(taxiId, Components.APPROVED + taxi.getFromTo());
                         senderService.sendMenu(userById, Components.APPROVED + taxi.getFromTo() + "\n" + Components.AFTER_APPROVE);
+                        senderService.sendMenu(userById, AdminComponents.JOIN_GROUP + getInviteLink());
                     }
                     case Components.DISAPPROVE -> {
 
@@ -200,7 +248,7 @@ public class AdminServiceImpl implements AdminService {
         DeleteMyCommands deleteMyCommands = new DeleteMyCommands();
         BotCommandScopeAllGroupChats scopeAllGroups = new BotCommandScopeAllGroupChats();
         deleteMyCommands.setScope(scopeAllGroups);
-            senderService.execute(deleteMyCommands);
+        senderService.execute(deleteMyCommands);
     }
 
     @Scheduled(cron = "0 0 0 * * ?") // Every day at midnight
@@ -211,8 +259,7 @@ public class AdminServiceImpl implements AdminService {
             if (taxi.getDuration() > 0) {
                 taxi.setDuration(taxi.getDuration() - 1);
                 taxiService.save(taxi);
-            }
-            else if (taxi.getDuration() == 0) {
+            } else if (taxi.getDuration() == 0) {
                 banTaxi(taxi.getChatId());
                 taxi.setStatus(false);
                 taxiService.save(taxi);
@@ -229,26 +276,31 @@ public class AdminServiceImpl implements AdminService {
         unbanChatMember.setUserId(taxiId);  // The ID of the taxi (user) to unban
         unbanChatMember.setOnlyIfBanned(true);
 
-            senderService.execute(unbanChatMember);
-            senderService.sendMessage(taxiId, AdminComponents.UNBANNED);
+        senderService.execute(unbanChatMember);
+        senderService.sendMessage(taxiId, AdminComponents.UNBANNED);
 
-            CreateChatInviteLink createInviteLink = new CreateChatInviteLink();
-            createInviteLink.setChatId(TAXI_GROUP_ID);
+        TaxiEntity taxi = taxiService.getById(taxiId);
+        taxi.setStatus(true);
+        taxi.setDuration(DURATION);
+        taxiService.save(taxi);
+
+        senderService.sendMessage(taxiId, AdminComponents.ENTER_THE_GROUP + getInviteLink());
+    }
+
+    private String getInviteLink() {
+
+        CreateChatInviteLink createInviteLink = new CreateChatInviteLink();
+        createInviteLink.setChatId(TAXI_GROUP_ID);
 //            createInviteLink.setCreatesJoinRequest(true);
-            createInviteLink.setName("taxi");
-            createInviteLink.setMemberLimit(1);
-            Instant expireTime = Instant
-                    .now()
-                    .plus(1, ChronoUnit.DAYS);
-//            createInviteLink.setExpireDate(expireTime.getEpochSecond());
-            ChatInviteLink inviteLink = senderService.execute(createInviteLink);
+        createInviteLink.setName("taxi");
+        createInviteLink.setMemberLimit(1);
+        Instant expireTime = Instant
+                .now()
+                .plus(1, ChronoUnit.DAYS);
 
-            TaxiEntity taxi = taxiService.getById(taxiId);
-            taxi.setStatus(true);
-            taxi.setDuration(30);
-            taxiService.save(taxi);
-
-            senderService.sendMessage(taxiId, AdminComponents.ENTER_THE_GROUP + inviteLink.getInviteLink());
+        return senderService
+                .execute(createInviteLink)
+                .getInviteLink();
     }
 
     private void banTaxi(Long taxiId) {

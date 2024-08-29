@@ -9,7 +9,7 @@ public interface Components {
     String ASK_CONTACT_REQUEST = "☎️ Raqamizni jo'nating!";
     String TAXIST = "\uD83D\uDE96Haydovchi";
     String CLIENT = "\uD83E\uDD35Yo'lovchi";
-    String ASK_USER_TYPE = "\uD83D\uDE96 or \uD83E\uDD35 \nHaydovchimisiz yoki Yulovchi?";
+    String ASK_USER_TYPE = "\uD83D\uDE96 or \uD83E\uDD35 \nHaydovchimisiz yoki Yo'lovchi?";
 
     //NEUTRAL
     String WRONG_ANSWER = "⁉️ Xato malumot kirittingiz! \nQaytadan urinib ko'ring!";
@@ -35,6 +35,7 @@ public interface Components {
     String INCORRECT_PHOTO = "❌ Rasm talabga javob bermaydi!";
     String SHOULD_FILL = "❗\uFE0F Bu malumotlarni to'ldirmasdan keyingi qadamga o'ta olmaysiz!";
     String AFTER_APPROVE = "Akkauntingiz 30kun davomida Faol holatda ishlaydi ❗\uFE0F ";
+    String ILL_GET = "\uD83D\uDE96 ZAKAS OLISH \uD83D\uDE96";
 
     //GROUP
     String GROUP_ADS = "Taksi xizmati kerak bo'lsa botga hoziroq start bosing";
@@ -44,7 +45,7 @@ public interface Components {
     String FINISH_BUTTON = "\uD83C\uDFC1 Tugatish";
     String NEXT_BUTTON = "🟢 Keyingi";
     String FINISHED_ADDRESS = "✅ Sizda doimiy qatnaydigan 3ta Shahar Muvaffaqiyatli saqlandi.";// O'zingiz istagan vaqtda bu shaharlarni o'zgartira olishingiz mumkin!
-    String REQUEST_ADMIN = "\n\uD83E\uDDD1\uD83C\uDFFB\u200D\uD83D\uDCBB So'rovingiz Adminga yuborildi! \nAdmin javobini kuting!";
+    String REQUEST_ADMIN = "\n\uD83E\uDDD1\uD83C\uDFFB\u200D\uD83D\uDCBB So'rovingiz Moderatorga yuborildi! Akkauntingiz tasdiqlanishi uchun to'lov amalga oshirishingiz kerak! Buning uchun \nAdminga yozing: ";
     String PROFILE_INFO = "\uD83E\uDD35\uD83C\uDFFB Profilim";
     String CONNECT_ADMIN = "\uD83E\uDDD1\uD83C\uDFFB\u200D\uD83D\uDCBB Admin bilan bog'lanish";
     String NO_SAME_REGION = "❗️ Bir xil Shahar tanlash mumkin emas";
@@ -72,9 +73,8 @@ public interface Components {
     String HELP_COMMAND = "Qo'shimcha yordam";
     String START_COMMAND = "Davom etish";
     String HELP_2 = "Botimizni qo'shimca afzalliklari: Agarda sizda Taksi guruhingiz bo'lsa Botni Guruhizga qo'shib Admin qilsangiz Bot Guruhizdagi yozishuvlar va ortiqcha narsalarni o'chirib turib sizga boshqarishga yordam bera oladi!";
-    Long TEZ_TAKSI_DRIVERS_GROUP_ID = 4241864854L;
     String ADD_GROUP = "\uD83D\uDC65 Guruhga Qo'shish";
-    String GROUP_URL_START = "https://t.me/Tez_Taksi_bot?startgroup=new";
+    String GROUP_URL_START = "https://t.me/toshkent_namangan_taksibot?startgroup=new";
 
     //CLIENT
     String CLIENT_ADDRESS = "\uD83D\uDCCD Qayerdan  Qayerga Bormoqchisiz?";
@@ -116,4 +116,7 @@ public interface Components {
     String ONE_TWO = "Namangandan Toshkentga";
     String TWO_ONE = "Toshkentdan Namanganga";
     String TIME = "\uD83D\uDD54 Muddat: ";
+    String WILL_ORDER = "Zakas olmochi:";
+    String IS_AGREE = "Agarda kelisha olmasangiz guruhga klient raqami tashalishi so'raladi❗\uFE0F";
+    String PL_INPUT = "Assalomu aleykum! Botimizdan foydalanish uchun so'ralgan malumotlarni to'ldirishingiz talab etiladi \uD83D\uDE42";
 }

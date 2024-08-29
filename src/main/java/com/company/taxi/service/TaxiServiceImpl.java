@@ -53,6 +53,10 @@ public class TaxiServiceImpl implements TaxiService {
     private String TO;
     @Value("${taxi.group.id}")
     private String TAXI_GROUP_ID;
+    @Value("${admin.username}")
+    private String ADMIN_USERNAME;
+    @Value("${admin.id}")
+    private String ADMIN_ID;
 
 
     @Override
@@ -92,7 +96,7 @@ public class TaxiServiceImpl implements TaxiService {
                 taxiRepository.save(taxi);
 
                 senderService.deleteMessage(chatId, messageId);
-                senderService.sendMenu(user,  REQUEST_ADMIN);
+                senderService.sendMenu(user,  REQUEST_ADMIN + ADMIN_USERNAME);
 
                 String status = (taxi.getStatus()) ? ALLOWED : NOT_ALLOWED;
                 sendRequestToAdmin(
@@ -135,7 +139,7 @@ public class TaxiServiceImpl implements TaxiService {
 //                        taxi.setVisibility(false);
 //                        taxiRepository.save(taxi);
                         senderService.deleteMessage(chatId, messageId);
-//                        senderService.sendMessage(chatId, Components.SHOULD_FILL);
+//                senderService.sendMessage(chatId, Components.SHOULD_FILL);
 //                handleMessage(user, message);
                     }
                 }
@@ -179,6 +183,13 @@ public class TaxiServiceImpl implements TaxiService {
 
         if (status.equals(NOT_ALLOWED))
             senderService.sendMessage(chatId, Components.NOT_ALLOWED_2, getMenu());
+    }
+
+    @Override
+    public boolean existsById(Long chatId) {
+
+        return taxiRepository
+                .existsById(chatId);
     }
 
 
@@ -237,7 +248,11 @@ public class TaxiServiceImpl implements TaxiService {
     public void sendVoyage(VoyageEntity voyage, Integer messageId) {//TODO
         System.out.println(TAXI_GROUP_ID);
 
-        senderService.sendToTaxiGroup(Long.valueOf(TAXI_GROUP_ID), voyage.getData());
+        String [] data = voyage
+                .getData()
+                .split("\n");
+        String temp = data[0] + "\n" + data[1] + "\n\n" + Components.WILL_ORDER;
+        senderService.sendToTaxiGroup(Long.valueOf(TAXI_GROUP_ID), temp, voyage);
 //        List<TaxiEntity> taxistsByVoyage = getTaxistsByVoyage(voyage);
 //        for (TaxiEntity taxi : taxistsByVoyage) {
 //            senderService.sendMainMenuAndGetExecuted(taxi.getChatId(), voyage.getAbout());
@@ -261,7 +276,6 @@ public class TaxiServiceImpl implements TaxiService {
             throw new AppBadRequestException();
         }
     }
-
 
     public ReplyKeyboardMarkup getMenu() {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();

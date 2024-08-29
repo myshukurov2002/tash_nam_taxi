@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.ForwardMessage;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
+import org.telegram.telegrambots.meta.api.methods.GetMe;
 import org.telegram.telegrambots.meta.api.methods.commands.DeleteMyCommands;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.BanChatMember;
@@ -30,6 +31,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.ChatInviteLink;
 import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -37,6 +39,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRem
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +60,16 @@ public class SenderServiceImpl implements SenderService {
     private String ONE_TWO;
     @Value("${two.one}")
     private String TWO_ONE;
+
+    @Override
+    public void handle(Message message) {
+        botController.handle(message);
+    }
+
+    @Override
+    public void handle(VoyageEntity voyage, Integer messageId) {
+        botController.handle(voyage, messageId);
+    }
 
     public void askContactRequest(Long chatId, String askContact) {
 
@@ -113,13 +126,16 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
-    @SneakyThrows
     public void deleteMessage(Long chatId, Integer messageId) {
         DeleteMessage deleteMessage = DeleteMessage.builder()
                 .chatId(chatId)
                 .messageId(messageId).build();
 
-        botController.execute(deleteMessage);
+        try {
+            botController.execute(deleteMessage);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage() + "The message already deleted!");
+        }
     }
 
     @Override
@@ -166,6 +182,7 @@ public class SenderServiceImpl implements SenderService {
 
     @Override
     public void sendPhoto(SendPhoto sendPhoto) {
+        sendPhoto.setParseMode("html");
         botController.sendPhoto(sendPhoto);
     }
 
@@ -197,11 +214,6 @@ public class SenderServiceImpl implements SenderService {
         replyKeyboardMarkup.setKeyboard(rows);
 
         return replyKeyboardMarkup;
-    }
-
-    @Override
-    public void handle(Message message) {
-        botController.handle(message);
     }
 
     @Override
@@ -303,11 +315,6 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
-    public void handle(VoyageEntity voyage, Integer messageId) {
-        botController.handle(voyage, messageId);
-    }
-
-    @Override
     public void sendMainMenu(Long chatId, String about) {
         askUserType(chatId, about);
     }
@@ -324,11 +331,13 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
-    public void sendToTaxiGroup(Long chatId, String data) {
+    public void sendToTaxiGroup(Long chatId, String data, VoyageEntity voyage) {
         SendMessage sendMessage = getSendMessage(chatId, data);
+        InlineKeyboardMarkup markup = getInlineKeyboardMarkup(ILL_GET, ILL_GET + "\n" + voyage.getId());
         sendMessage.setParseMode("html");
         sendMessage.enableHtml(true);
         sendMessage.setProtectContent(true);
+        sendMessage.setReplyMarkup(markup);
         sendMessage(sendMessage);
     }
 
@@ -352,6 +361,20 @@ public class SenderServiceImpl implements SenderService {
     @Override
     public void execute(DeleteMyCommands deleteMyCommands) {
         botController.removeGroupCommands(deleteMyCommands);
+    }
+
+    @Override
+    public User getMe(GetMe getMe) {
+        return botController.getMe(getMe);
+    }
+
+    @Override
+    @SneakyThrows
+    public void editMessageMarkdown(Long id, Integer messageId, String caption, InlineKeyboardMarkup markup) {
+        EditMessageText editMessage = getEditMessage(id, messageId, caption);
+        editMessage.setParseMode("MarkdownV2");
+        editMessage.setReplyMarkup(markup);
+        botController.execute(editMessage);
     }
 
     public void askUserType(Long chatId, String askUserType) {
@@ -386,6 +409,18 @@ public class SenderServiceImpl implements SenderService {
         return KeyboardButton.builder()
                 .text(text)
                 .build();
+    }
+
+    @Override
+    public InlineKeyboardMarkup getInlineKeyboardMarkup(String text, String data) {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        InlineKeyboardButton inlineButton = getInlineButton(text, data);
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        row.add(inlineButton);
+        rows.add(row);
+        markup.setKeyboard(rows);
+        return markup;
     }
 
     private KeyboardRow getKeyboardRow(String... texts) {

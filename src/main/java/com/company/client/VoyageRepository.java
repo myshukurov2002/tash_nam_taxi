@@ -14,4 +14,7 @@ public interface VoyageRepository extends JpaRepository<VoyageEntity, Long> {
     Optional<VoyageEntity> findByClientIdAndVisibilityTrue(Long chatId);
 
     List<VoyageEntity> findAllByClientIdAndVoyageState(Long chatId, VoyageState voyageState);
+
+    Optional<VoyageEntity> findFirstByIdAndVisibilityTrueOrderByCreatedDateDesc(Long voyageId);
+    Optional<VoyageEntity> findFirstByIdAndVoyageStateOrderByCreatedDateDesc(Long voyageId, VoyageState accepted);
 }

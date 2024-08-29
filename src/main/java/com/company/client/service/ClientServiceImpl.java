@@ -40,7 +40,6 @@ public class ClientServiceImpl implements ClientService {
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
     private final VoyageRepository voyageRepository;
-
     private final SenderService senderService;
 
     @Value("${one.two}")
@@ -231,6 +230,14 @@ public class ClientServiceImpl implements ClientService {
                             .append("\n-------------------------------\n");
                 });
         return voyages.toString();
+    }
+
+    @Override
+    public VoyageEntity getVoyage(Long voyageId) {
+
+        return voyageRepository
+                .findFirstByIdAndVoyageStateOrderByCreatedDateDesc(voyageId, VoyageState.ACCEPTED)
+                .orElseThrow();
     }
 
     private VoyageEntity getVoyage(Long chatId, String queryId, Integer messageId, UserEntity user) {

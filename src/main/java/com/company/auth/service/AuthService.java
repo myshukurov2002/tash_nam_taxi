@@ -12,4 +12,6 @@ public interface AuthService {
     void save(UserEntity user);
 
     void handleCallbackQuery(Long user, CallbackQuery callbackQuery);
+
+    UserEntity getUserById(Long chatId, String firstName);
 }

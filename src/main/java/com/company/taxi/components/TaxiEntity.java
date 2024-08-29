@@ -50,7 +50,7 @@ public class TaxiEntity extends BaseEntity {
     }
 
     public void setDuration(int d) {
-        duration += duration + d;
+        duration = duration + d;
     }
 
 

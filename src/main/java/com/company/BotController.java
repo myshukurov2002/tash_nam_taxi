@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.GetMe;
 import org.telegram.telegrambots.meta.api.methods.commands.DeleteMyCommands;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.BanChatMember;
@@ -166,5 +167,10 @@ public class BotController extends TelegramLongPollingBot {
     @SneakyThrows
     public void removeGroupCommands(DeleteMyCommands deleteMyCommands) {
         execute(deleteMyCommands);
+    }
+
+    @SneakyThrows
+    public User getMe(GetMe getMe) {
+        return execute(getMe);
     }
 }

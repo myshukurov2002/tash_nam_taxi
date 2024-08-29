@@ -1,7 +1,6 @@
 package com.company;
 
 import com.company.admin.AdminService;
-import com.company.auth.UserRepository;
 import com.company.auth.components.UserEntity;
 import com.company.auth.components.UserRole;
 import com.company.auth.components.UserState;
@@ -9,11 +8,13 @@ import com.company.auth.service.AuthService;
 import com.company.client.components.VoyageEntity;
 import com.company.client.service.ClientService;
 import com.company.components.Components;
+import com.company.group.GroupService;
 import com.company.sender.SenderService;
 import com.company.taxi.service.TaxiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 @Component
@@ -25,11 +26,14 @@ public class MessageHandler {
     private final SenderService senderService;
     private final AuthService authService;
     private final AdminService adminService;
+    private final GroupService groupService;
 
     public void handleMessage(Message message) {
 
-        Long chatId = message.getChatId();
-        UserEntity user = authService.getUserById(chatId);
+        Chat chat = message.getChat();
+        Long chatId = chat.getId();
+        String firstName = chat.getFirstName();
+        UserEntity user = authService.getUserById(chatId, firstName);
         UserRole userRole = user.getUserRole();
 
         if (message.getFrom().getUserName() != null &&
@@ -56,6 +60,12 @@ public class MessageHandler {
 
         UserEntity user = authService.getUserById(chatId);
         UserRole userRole = user.getUserRole();
+
+        if (callbackQuery.getData().startsWith(Components.ILL_GET)) {
+
+            groupService.handleCallBackQuery(chatId, callbackQuery);
+            return;
+        }
 
         switch (userRole) {
             case CLIENT -> clientService.handleCallbackQuery(user, callbackQuery);

@@ -3,6 +3,7 @@ package com.company.sender;
 import com.company.auth.components.UserEntity;
 import com.company.client.components.VoyageEntity;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
+import org.telegram.telegrambots.meta.api.methods.GetMe;
 import org.telegram.telegrambots.meta.api.methods.commands.DeleteMyCommands;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.BanChatMember;
@@ -14,6 +15,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.ChatInviteLink;
 import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -47,6 +49,8 @@ public interface SenderService {
     void answerInlineButton(String InlineButtonId, String text);
 
     void editMessage(Long chatId, Integer messageId, String text, InlineKeyboardMarkup replyMarkup);
+
+    InlineKeyboardMarkup getInlineKeyboardMarkup(String text, String data);
 
     List<ChatMember> getAdmins(GetChatAdministrators chatId);
 
@@ -82,7 +86,7 @@ public interface SenderService {
 
     void initCommands(SetMyCommands setMyCommands);
 
-    void sendToTaxiGroup(Long chatId, String data);
+    void sendToTaxiGroup(Long chatId, String data, VoyageEntity voyage);
 
     void execute(BanChatMember banChatMember);
 
@@ -91,4 +95,8 @@ public interface SenderService {
     ChatInviteLink execute(CreateChatInviteLink createInviteLink);
 
     void execute(DeleteMyCommands deleteMyCommands);
+
+    User getMe(GetMe getMe);
+
+    void editMessageMarkdown(Long id, Integer messageId, String caption, InlineKeyboardMarkup markup);
 }

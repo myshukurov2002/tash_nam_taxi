@@ -37,15 +37,15 @@ public class AuthServiceImpl implements AuthService {
                 senderService.sendMessage(chatId, Components.ASK_FULL_NAME);
             }
             case FULL_NAME -> {
-                if (!message.hasText() || message.getText().length() < 3) {
-                    senderService.deleteMessage(chatId, message.getMessageId());
-                    senderService.sendMessage(chatId, Components.WRONG_ANSWER);
-                    return;
-                }
-                user.setFullName(message.getText().toUpperCase());
+//                if (!message.hasText() || message.getText().length() < 3) {
+//                    senderService.deleteMessage(chatId, message.getMessageId());
+//                    senderService.sendMessage(chatId, Components.WRONG_ANSWER);
+//                    return;
+//                }
+//                user.setFullName(message.getText().toUpperCase());
                 user.setUserState(UserState.PHONE);
                 save(user);
-
+                senderService.sendMessage(chatId, Components.PL_INPUT);
                 senderService.askContactRequest(chatId, Components.ASK_CONTACT_REQUEST);
             }
             case PHONE -> {
@@ -59,12 +59,12 @@ public class AuthServiceImpl implements AuthService {
                 String phone = message.getContact().getPhoneNumber();
                 Long phoneId = message.getContact().getUserId();
 
-                if (!phone.contains("+998")) {
-                    senderService.deleteMessage(chatId, message.getMessageId());
-                    senderService.sendMessage(chatId, Components.ONLY_UZB);
-                    senderService.askContactRequest(chatId, Components.ASK_CONTACT_REQUEST);
-                    return;
-                }
+//                if (!phone.contains("+998")) {
+//                    senderService.deleteMessage(chatId, message.getMessageId());
+//                    senderService.sendMessage(chatId, Components.ONLY_UZB);
+//                    senderService.askContactRequest(chatId, Components.ASK_CONTACT_REQUEST);
+//                    return;
+//                }
                 if (!phoneId.equals(chatId)) {
                     senderService.deleteMessage(chatId, message.getMessageId());
                     senderService.sendMessage(chatId, Components.NUMBER_NOT_YOURS);
@@ -113,6 +113,23 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
+    @Override
+    public UserEntity getUserById(Long chatId, String firstName) {
+        return userRepository
+                .findByChatIdAndVisibilityTrue(chatId)
+                .orElseGet(() -> {
+                            UserEntity user = UserEntity.builder()
+                                    .chatId(chatId)
+                                    .fullName(firstName)
+                                    .userState(UserState.FULL_NAME)
+                                    .userRole(UserRole.SOUL)
+                                    .build();
+
+                            return userRepository.save(user);
+                        }
+                );
+    }
+
     public UserEntity getUserById(Long chatId) {
 
         return userRepository
@@ -120,7 +137,7 @@ public class AuthServiceImpl implements AuthService {
                 .orElseGet(() -> {
                             UserEntity user = UserEntity.builder()
                                     .chatId(chatId)
-                                    .userState(UserState.START)
+                                    .userState(UserState.FULL_NAME)
                                     .userRole(UserRole.SOUL)
                                     .build();
 
