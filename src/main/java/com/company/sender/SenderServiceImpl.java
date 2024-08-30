@@ -377,6 +377,14 @@ public class SenderServiceImpl implements SenderService {
         botController.execute(editMessage);
     }
 
+    @Override
+    public void replyMessage(Long chatId, Integer messageId, String text, InlineKeyboardMarkup inlineButtonForGroup) {
+        SendMessage sendMessage = getSendMessage(chatId, text);
+        sendMessage.setReplyMarkup(inlineButtonForGroup);
+        sendMessage.setReplyToMessageId(messageId);
+        sendMessage(sendMessage);
+    }
+
     public void askUserType(Long chatId, String askUserType) {
 
         SendMessage sendMessage = getSendMessage(chatId, askUserType);

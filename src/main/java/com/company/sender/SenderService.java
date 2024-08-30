@@ -69,7 +69,9 @@ public interface SenderService {
     void editMessageWithMedia(Integer messageId, SendPhoto sendPhoto, String caption);
 
     void editMessageCaption(Long chatId, Integer messageId, String caption);
+
     InlineKeyboardMarkup getAddresses();
+
     InlineKeyboardButton getInlineButton(String text, String data);
 
     InlineKeyboardMarkup addCancelButton(InlineKeyboardMarkup addresses);
@@ -99,4 +101,6 @@ public interface SenderService {
     User getMe(GetMe getMe);
 
     void editMessageMarkdown(Long id, Integer messageId, String caption, InlineKeyboardMarkup markup);
+
+    void replyMessage(Long chatId, Integer messageId, String text, InlineKeyboardMarkup inlineButtonForGroup);
 }

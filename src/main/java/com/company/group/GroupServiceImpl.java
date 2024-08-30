@@ -49,7 +49,8 @@ public class GroupServiceImpl implements GroupService {
     public void handle(Chat chat, Message message) {
 
         Long chatId = chat.getId();
-        System.out.println(chat.getId());
+        Long userId = message.getFrom().getId();
+        Integer messageId = message.getMessageId();
 
         if (chatId.equals(TAXI_GROUP_ID)) {
 
@@ -82,10 +83,9 @@ public class GroupServiceImpl implements GroupService {
                 senderService.deleteMessage(chatId, message.getMessageId());
             }
         }
-
-        if (!isUserAdmin(chatId, message.getFrom().getId())) {
+        if (!isUserAdmin(chatId, userId)) {
+            senderService.replyMessage(chatId, messageId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
             senderService.deleteMessage(chatId, message.getMessageId());
-            senderService.sendMessage(chatId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
         }
     }
 
