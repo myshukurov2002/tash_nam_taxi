@@ -69,7 +69,7 @@ public interface Components {
     Long ADMIN_ID = 7315968056L;
     Long SUPER_ADMIN_ID = 1174220995L;
     String APPROVED = "\uD83C\uDF89 Tabriklaymiz! Sizning akkauntingiz faol holatda.\nSizga quyidagi yo'nalishlarda Yo'lovchi so'rovlari taqdim etiladi!\n\n\n";
-    String DISAPPROVED = "❌ Afsuski Biz Akkauntingizni tasdiqlay olmadik.  \nMashinangizni rasmida Davlat Raqami ham tushkaniga etibor bering! Agar Raqam ko'rinmagan bo'lsa Arizani rad etilishiga sabab bo'ladi! \n\nEndi esa Haydovchi sifatida qaytadan ro'yhatdan o'ting va malumotlarni to'g'ri kiritishga harakat qiling!";//Chunki siz quyidagi Xatolarga yo'l qo'ygan bo'lishingiz mumkin!1) Xato ism: <strike>fdfsg</strike> Zokir ✅
+    String DISAPPROVED = "❌ Afsuski Biz Akkauntingizni tasdiqlay olmadik.  \nMashinangizni rasmida Davlat Raqami ham tushkaniga etibor bering! Agar Raqam ko'rinmagan bo'lsa Arizani rad etilishiga sabab bo'ladi! \n\nEndi esa Haydovchi sifatida qaytadan ro'yhatdan o'ting";//Chunki siz quyidagi Xatolarga yo'l qo'ygan bo'lishingiz mumkin!1) Xato ism: <strike>fdfsg</strike> Zokir ✅
     String HELP_COMMAND = "Qo'shimcha yordam";
     String START_COMMAND = "Davom etish";
     String HELP_2 = "Botimizni qo'shimca afzalliklari: Agarda sizda Taksi guruhingiz bo'lsa Botni Guruhizga qo'shib Admin qilsangiz Bot Guruhizdagi yozishuvlar va ortiqcha narsalarni o'chirib turib sizga boshqarishga yordam bera oladi!";
