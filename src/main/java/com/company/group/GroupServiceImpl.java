@@ -85,7 +85,7 @@ public class GroupServiceImpl implements GroupService {
         }
         if (!isUserAdmin(chatId, userId)) {
             senderService.replyMessage(chatId, messageId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
-            senderService.deleteMessage(chatId, message.getMessageId());
+//            senderService.deleteMessage(chatId, message.getMessageId());
         }
     }
 
