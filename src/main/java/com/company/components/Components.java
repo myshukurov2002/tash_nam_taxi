@@ -38,7 +38,7 @@ public interface Components {
     String ILL_GET = "\uD83D\uDE96 ZAKAS OLISH \uD83D\uDE96";
 
     //GROUP
-    String GROUP_ADS = "Tez va Ishonchli Taksi xizmati kerak bo'lsa botga hoziroq start bosing";
+    String GROUP_ADS = "Tez va Ishonchli Taksi xizmati kerak bo'lsa botga hoziroq start bosing. Botdan Taksistlar ham foydalana oladi!";
     String GROUP_LINK = "\uD83D\uDE96 TAKSI CHAQIRISH \uD83D\uDE96";
     String SELECT_ = "SELECT_";
     String RESET_BUTTON = "\uD83D\uDD04";

@@ -65,7 +65,7 @@ public class GroupServiceImpl implements GroupService {
 //           }
             return;
         }
-        if (taxiService.existsById(chatId)) {
+        if (taxiService.existsById(userId)) {
             TaxiEntity taxi = taxiService.getById(chatId);
             if (taxi.getStatus()) {
                 return;
