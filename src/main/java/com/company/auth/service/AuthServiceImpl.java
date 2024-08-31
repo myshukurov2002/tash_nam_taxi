@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -128,6 +130,11 @@ public class AuthServiceImpl implements AuthService {
                             return userRepository.save(user);
                         }
                 );
+    }
+
+    @Override
+    public List<UserEntity> getAll() {
+        return userRepository.findAll();
     }
 
     public UserEntity getUserById(Long chatId) {

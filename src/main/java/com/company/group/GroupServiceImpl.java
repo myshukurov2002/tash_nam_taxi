@@ -70,7 +70,6 @@ public class GroupServiceImpl implements GroupService {
             if (taxi.getStatus()) {
                 return;
             }
-
         }
 
 

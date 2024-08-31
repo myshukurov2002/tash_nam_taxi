@@ -86,7 +86,8 @@ public class AdminServiceImpl implements AdminService {
                     getInfo(Long.valueOf(words[1]), adminId);
                 }
                 case AdminComponents.SEND -> {
-//                    sendMessage(words[1], words[2])
+                    send(text);
+
                 }
                 case AdminComponents.CARD -> {
                     sendCard(Long.valueOf(words[1]));
@@ -100,40 +101,6 @@ public class AdminServiceImpl implements AdminService {
             log.error(e.getMessage());
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
         }
-    }
-
-    private void sendCard(Long chatId) {
-        UserEntity userById = authService.getUserById(chatId);
-        StringBuilder amount = new StringBuilder()
-                .append(AdminComponents.SHOULD_PAY)
-                .append("\n\n")
-                .append(AdminComponents.CARD_OWNER)
-                .append(CARD_OWNER)
-                .append("\n")
-                .append(AdminComponents.CARD_NUMBER)
-                .append(CARD_NUMBER)
-                .append("\n")
-                .append(AdminComponents.TAXI_PRICE)
-                .append(TAXI_PRICE)
-                .append("\n\n").
-                append("Admin: ")
-                .append(ADMIN_USERNAME);
-        senderService.sendMenu(userById, amount.toString());
-    }
-
-    private void getInfo(Long taxiId, Long chatId) {
-        TaxiEntity taxi = taxiService.getById(taxiId);
-        taxiService.getInfo(taxi, chatId);
-    }
-
-    private void addDuration(int duration, Long taxiId) {
-        TaxiEntity taxi = taxiService.getById(taxiId);
-        taxi.setDuration(duration);
-        taxi.setStatus(true);
-        taxiService.save(taxi);
-
-        UserEntity userById = authService.getUserById(taxiId);
-        senderService.sendMenu(userById, AdminComponents.DURATION_EXTENDED + taxi.getDuration() + "kun");
     }
 
     @Override
@@ -253,7 +220,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Scheduled(cron = "0 0 0 * * ?") // Every day at midnight
     public void autoBanTaxis() {
-        List<TaxiEntity> taxis = taxiService.findAll();
+        List<TaxiEntity> taxis = taxiService
+                .findAll();
 
         for (TaxiEntity taxi : taxis) {
             if (taxi.getDuration() > 0) {
@@ -268,6 +236,50 @@ public class AdminServiceImpl implements AdminService {
                 senderService.sendMessage(taxi.getChatId(), AdminComponents.CAN_BANNED + ADMIN_ID);
             }
         }
+    }
+
+    private void send(String text) {
+        text.replace("/send", " ");
+        authService
+                .getAll()
+                .forEach((UserEntity u) -> {
+                    Long chatId = u.getChatId();
+                    senderService.sendMessage(chatId, text);
+                });
+    }
+
+    private void sendCard(Long chatId) {
+        UserEntity userById = authService.getUserById(chatId);
+        StringBuilder amount = new StringBuilder()
+                .append(AdminComponents.SHOULD_PAY)
+                .append("\n\n")
+                .append(AdminComponents.CARD_OWNER)
+                .append(CARD_OWNER)
+                .append("\n")
+                .append(AdminComponents.CARD_NUMBER)
+                .append(CARD_NUMBER)
+                .append("\n")
+                .append(AdminComponents.TAXI_PRICE)
+                .append(TAXI_PRICE)
+                .append("\n\n").
+                append("Admin: ")
+                .append(ADMIN_USERNAME);
+        senderService.sendMenu(userById, amount.toString());
+    }
+
+    private void getInfo(Long taxiId, Long chatId) {
+        TaxiEntity taxi = taxiService.getById(taxiId);
+        taxiService.getInfo(taxi, chatId);
+    }
+
+    private void addDuration(int duration, Long taxiId) {
+        TaxiEntity taxi = taxiService.getById(taxiId);
+        taxi.setDuration(duration);
+        taxi.setStatus(true);
+        taxiService.save(taxi);
+
+        UserEntity userById = authService.getUserById(taxiId);
+        senderService.sendMenu(userById, AdminComponents.DURATION_EXTENDED + taxi.getDuration() + "kun");
     }
 
     public void unbanTaxi(Long taxiId) {

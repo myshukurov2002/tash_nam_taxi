@@ -52,6 +52,8 @@ import static com.company.components.Components.*;
 @Slf4j
 public class SenderServiceImpl implements SenderService {
 
+    @Value("${bot.url}")
+    private String GROUP_LINK;
     @Lazy
     @Autowired
     private BotController botController;
@@ -296,7 +298,7 @@ public class SenderServiceImpl implements SenderService {
         InlineKeyboardButton addGroupButton = InlineKeyboardButton
                 .builder()
                 .text(Components.ADD_GROUP)
-                .url(Components.GROUP_URL_START)
+                .url(GROUP_LINK + Components.GROUP_URL_START)
                 .build();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row = new ArrayList<>();

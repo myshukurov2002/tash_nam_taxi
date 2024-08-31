@@ -38,7 +38,7 @@ public interface Components {
     String ILL_GET = "\uD83D\uDE96 ZAKAS OLISH \uD83D\uDE96";
 
     //GROUP
-    String GROUP_ADS = "Tez va Ishonchli Taksi xizmati kerak bo'lsa botga hoziroq start bosing. Botdan Taksistlar ham foydalana oladi!";
+    String GROUP_ADS = "Tez va Ishonchli Taksi xizmati kerak bo'lsa botga hoziroq start bosing";
     String GROUP_LINK = "\uD83D\uDE96 TAKSI CHAQIRISH \uD83D\uDE96";
     String SELECT_ = "SELECT_";
     String RESET_BUTTON = "\uD83D\uDD04";
@@ -74,7 +74,7 @@ public interface Components {
     String START_COMMAND = "Davom etish";
     String HELP_2 = "Botimizni qo'shimca afzalliklari: Agarda sizda Taksi guruhingiz bo'lsa Botni Guruhizga qo'shib Admin qilsangiz Bot Guruhizdagi yozishuvlar va ortiqcha narsalarni o'chirib turib sizga boshqarishga yordam bera oladi!";
     String ADD_GROUP = "\uD83D\uDC65 Guruhga Qo'shish";
-    String GROUP_URL_START = "https://t.me/toshkent_namangan_taksibot?startgroup=new";
+    String GROUP_URL_START = "?startgroup=new";
 
     //CLIENT
     String CLIENT_ADDRESS = "\uD83D\uDCCD Qayerdan  Qayerga Bormoqchisiz?";
