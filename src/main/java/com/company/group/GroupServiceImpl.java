@@ -49,7 +49,7 @@ public class GroupServiceImpl implements GroupService {
     private final TaxiService taxiService;
     private final ClientService clientService;
     private final AuthService authService;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
+//    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
 
     @Override
     public void handle(Chat chat, Message message) {
@@ -91,7 +91,7 @@ public class GroupServiceImpl implements GroupService {
         if (!isUserAdmin(chatId, userId)) {
             Message executed = senderService
                     .sendMessage(chatId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
-            scheduler.schedule(() -> senderService.deleteMessage(chatId, executed.getMessageId()), 60, TimeUnit.SECONDS);
+//            scheduler.schedule(() -> senderService.deleteMessage(chatId, executed.getMessageId()), 60, TimeUnit.SECONDS);
 //            senderService.replyMessage(chatId, messageId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
 //            senderService.deleteMessage(chatId, message.getMessageId());
         }
