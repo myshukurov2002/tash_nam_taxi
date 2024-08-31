@@ -45,16 +45,10 @@ public class GroupServiceImpl implements GroupService {
     @Value("${taxi.group.id}")
     private Long TAXI_GROUP_ID;
 
-    @Value("${admin.id}")
-    private Long ADMIN_ID;
-
     private final SenderService senderService;
     private final TaxiService taxiService;
     private final ClientService clientService;
     private final AuthService authService;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private final AtomicInteger messageCounter = new AtomicInteger(0);
-    private final int RATE_LIMIT = 10;
     @Override
     public void handle(Chat chat, Message message) {
 
@@ -95,18 +89,6 @@ public class GroupServiceImpl implements GroupService {
         if (!isUserAdmin(chatId, userId)) {
             Message executed = senderService
                     .sendMessage(chatId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
-            if (messageCounter.incrementAndGet() <= RATE_LIMIT) {
-                scheduler.schedule(() -> {
-                    try {
-                        senderService.deleteMessage(chatId, executed.getMessageId());
-                    } catch (Exception e) {
-                        log.error(e.getMessage());
-                        senderService.sendMessage(ADMIN_ID, e.getMessage());
-                    }
-                }, 60, TimeUnit.SECONDS);
-            } else {
-                System.out.println("Rate limit exceeded, skipping this message.");
-            }
 //            senderService.replyMessage(chatId, messageId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
 //            senderService.deleteMessage(chatId, message.getMessageId());
         }
