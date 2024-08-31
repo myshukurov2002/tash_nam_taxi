@@ -12,4 +12,5 @@ public interface AdminService {
 
     void init();
     void initCommands();
+    public void banTaxi(Long taxiId);
 }

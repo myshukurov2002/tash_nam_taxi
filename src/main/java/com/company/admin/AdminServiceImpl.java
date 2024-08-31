@@ -218,31 +218,6 @@ public class AdminServiceImpl implements AdminService {
         senderService.execute(deleteMyCommands);
     }
 
-    @Scheduled(cron = "0 */1 * * * ?")
-    public void autoBanTaxis() {
-        List<TaxiEntity> taxis = taxiService
-                .findAll();
-
-        for (TaxiEntity taxi : taxis) {
-            if (taxi.getDuration() == 2) {
-                senderService.sendMessage(taxi.getChatId(), AdminComponents.CAN_BANNED + ADMIN_ID);
-                senderService.sendMessage(ADMIN_ID, "sent attenttion to taxi ID: " + taxi.getChatId());
-            }
-
-            if (taxi.getDuration() > 0) {
-                taxi.setDuration(taxi.getDuration() - 1);
-                taxiService.save(taxi);
-                senderService.sendMessage(ADMIN_ID, "incremented duration");
-            } else if (taxi.getDuration() == 0) {
-                banTaxi(taxi.getChatId());
-                taxi.setStatus(false);
-                taxiService.save(taxi);
-                senderService.sendMessage(ADMIN_ID, "banned taxi ID: " + taxi.getChatId());
-            }
-            senderService.sendMessage(ADMIN_ID, "autoban worked");
-        }
-    }
-
     private void send(String text) {
         text.replace("/send", " ");
         authService
@@ -322,7 +297,8 @@ public class AdminServiceImpl implements AdminService {
                 .getInviteLink();
     }
 
-    private void banTaxi(Long taxiId) {
+    @Override
+    public void banTaxi(Long taxiId) {
 
         TaxiEntity taxi = taxiService.getById(taxiId);
         taxi.ban();
