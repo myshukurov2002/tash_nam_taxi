@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.GetMe;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatAdministrators;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -25,6 +26,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +49,7 @@ public class GroupServiceImpl implements GroupService {
     private final TaxiService taxiService;
     private final ClientService clientService;
     private final AuthService authService;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
 
     @Override
     public void handle(Chat chat, Message message) {
@@ -83,8 +89,10 @@ public class GroupServiceImpl implements GroupService {
             }
         }
         if (!isUserAdmin(chatId, userId)) {
+            Message executed = senderService
+                    .sendMessage(chatId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
+            scheduler.schedule(() -> senderService.deleteMessage(chatId, executed.getMessageId()), 60, TimeUnit.SECONDS);
 //            senderService.replyMessage(chatId, messageId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
-              senderService.sendMessage(chatId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
 //            senderService.deleteMessage(chatId, message.getMessageId());
         }
     }
@@ -157,6 +165,9 @@ public class GroupServiceImpl implements GroupService {
 
         GetChatAdministrators getChatAdministrators = new GetChatAdministrators();
         getChatAdministrators.setChatId(chatId);
+        GetChatMember getChatMember = new GetChatMember();
+        getChatMember.setChatId(chatId);
+        getChatMember.setUserId(userId);
 
         List<ChatMember> administrators = senderService.getAdmins(getChatAdministrators);
         for (ChatMember admin : administrators) {
@@ -173,4 +184,5 @@ public class GroupServiceImpl implements GroupService {
         User botUser = senderService.getMe(getMe);
         return botUser.getId();
     }
+
 }

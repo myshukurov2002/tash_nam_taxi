@@ -26,7 +26,7 @@ import java.util.List;
 public interface SenderService {
     void askContactRequest(Long chatId, String askContact);
 
-    void sendMessage(SendMessage sendMessage);
+    Message sendMessage(SendMessage sendMessage);
 
     void sendMessage(Long chatId, String message, ReplyKeyboardMarkup menu);
 
@@ -44,7 +44,7 @@ public interface SenderService {
 
     void deleteMessage(Long chatId, Integer messageId);
 
-    void sendMessage(Long chatId, String text, InlineKeyboardMarkup inlineButton);
+    Message sendMessage(Long chatId, String text, InlineKeyboardMarkup inlineButton);
 
     void answerInlineButton(String InlineButtonId, String text);
 

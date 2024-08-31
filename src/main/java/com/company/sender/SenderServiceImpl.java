@@ -45,7 +45,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.company.components.Components.*;
+import static com.company.components.Components.ILL_GET;
+import static com.company.components.Components.PROFILE_INFO;
 
 @Component
 @RequiredArgsConstructor
@@ -84,8 +85,8 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @SneakyThrows
-    public void sendMessage(SendMessage sendMessage) {
-        botController.execute(sendMessage);
+    public Message sendMessage(SendMessage sendMessage) {
+        return botController.execute(sendMessage);
     }
 
     @SneakyThrows
@@ -141,11 +142,11 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
-    public void sendMessage(Long chatId, String text, InlineKeyboardMarkup inlineButton) {
+    public Message sendMessage(Long chatId, String text, InlineKeyboardMarkup inlineButton) {
         SendMessage sendMessage = getSendMessage(chatId, text);
         sendMessage.setParseMode("HTML");
         sendMessage.setReplyMarkup(inlineButton);
-        sendMessage(sendMessage);
+        return sendMessage(sendMessage);
     }
 
     @SneakyThrows
