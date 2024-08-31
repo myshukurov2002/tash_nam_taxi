@@ -113,12 +113,12 @@ public class AdminServiceImpl implements AdminService {
                 .forEach(t -> {
                     UserEntity userById = authService.getUserById(t.getChatId());
                             builder
-                            .append("ID: " + userById.getChatId())
+                            .append("\nID: " + userById.getChatId())
                             .append("\nFullname: " + userById.getFullName())
                             .append("\nPhone: " + userById.getPhone())
                             .append("\nUsername: " + userById.getUsername())
                             .append("\nMuddat: "+ t.getDuration())
-                            .append("-------------------------\n");
+                            .append("\n-------------------------");
                 });
         senderService.sendMessage(ADMIN_ID, builder.toString());
     }

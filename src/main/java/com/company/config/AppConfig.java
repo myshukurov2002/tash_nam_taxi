@@ -36,7 +36,7 @@ public class AppConfig {
             }
 
             if (taxi.getDuration() > 0) {
-                taxi.setDuration(taxi.getDuration() - 1);
+                taxi.setDuration(-1);
                 taxiService.save(taxi);
                 senderService.sendMessage(ADMIN_ID, "incremented duration");
             } else if (taxi.getDuration() == 0) {
