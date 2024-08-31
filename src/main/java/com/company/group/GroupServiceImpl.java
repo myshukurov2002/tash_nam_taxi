@@ -84,7 +84,8 @@ public class GroupServiceImpl implements GroupService {
             }
         }
         if (!isUserAdmin(chatId, userId)) {
-            senderService.replyMessage(chatId, messageId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
+//            senderService.replyMessage(chatId, messageId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
+              senderService.sendMessage(chatId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
 //            senderService.deleteMessage(chatId, message.getMessageId());
         }
     }
@@ -108,10 +109,10 @@ public class GroupServiceImpl implements GroupService {
         if (taxi.getStatus()) {
 
             String text = message.getText();
-            String [] texts = message.getText()
+            String[] texts = message.getText()
                     .split("\n");
 //            String nameTaxi = "[" + userById.getFullName() + "](tg://user?id=" + chatId + ")";
-            String nameTaxi =userById.getFullName();
+            String nameTaxi = userById.getFullName();
 
             if (text.contains(nameTaxi) /*||
                 text.contains(userById.getFullName())*/) {
@@ -124,7 +125,7 @@ public class GroupServiceImpl implements GroupService {
             if (texts.length <= 4) {
                 senderService.editMessageMarkdown(group.getId(), message.getMessageId(), caption, markup);
             } else {
-                caption+="\n\n" + Components.IS_AGREE;
+                caption += "\n\n" + Components.IS_AGREE;
                 senderService.editMessage(group.getId(), message.getMessageId(), caption);
             }
 
