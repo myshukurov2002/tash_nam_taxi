@@ -108,6 +108,7 @@ public class AdminServiceImpl implements AdminService {
 
     private void getAll(Long adminId) {
         StringBuilder builder = new StringBuilder();
+
         taxiService
                 .findAll()
                 .forEach(t -> {
