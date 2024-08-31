@@ -85,6 +85,9 @@ public class AdminServiceImpl implements AdminService {
                 case AdminComponents.GET -> {
                     getInfo(Long.valueOf(words[1]), adminId);
                 }
+                case AdminComponents.GET_ALL -> {
+                    getAll(adminId);
+                }
                 case AdminComponents.SEND -> {
                     send(text);
 
@@ -101,6 +104,23 @@ public class AdminServiceImpl implements AdminService {
             log.error(e.getMessage());
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
         }
+    }
+
+    private void getAll(Long adminId) {
+        StringBuilder builder = new StringBuilder();
+        taxiService
+                .findAll()
+                .forEach(t -> {
+                    UserEntity userById = authService.getUserById(t.getChatId());
+                            builder
+                            .append("ID: " + userById.getChatId())
+                            .append("\nFullname: " + userById.getFullName())
+                            .append("\nPhone: " + userById.getPhone())
+                            .append("\nUsername: " + userById.getUsername())
+                            .append("\nMuddat: "+ t.getDuration())
+                            .append("-------------------------\n");
+                });
+        senderService.sendMessage(ADMIN_ID, builder.toString());
     }
 
     @Override
