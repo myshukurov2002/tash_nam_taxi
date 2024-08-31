@@ -24,7 +24,7 @@ public class AppConfig {
     private final AdminService adminService;
 
 
-    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "0 59 23 * * ?")
     public void autoBanTaxis() {
         List<TaxiEntity> taxis = taxiService
                 .findAll();
