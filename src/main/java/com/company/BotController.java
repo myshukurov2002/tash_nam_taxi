@@ -34,9 +34,9 @@ import java.util.List;
 public class BotController extends TelegramLongPollingBot {
 
     @Value("${bot.username}")
-    private String BOT_USERNAME = "@Tez_Taksi_bot";
+    private String BOT_USERNAME;
     @Value("${bot.token}")
-    private String BOT_TOKEN = "5822164968:AAFYzc_15xtH4PGsUk-U0SobZ_xBrun1geY";
+    private String BOT_TOKEN;
 
     @Autowired
     private MessageHandler messageHandler;

@@ -218,23 +218,28 @@ public class AdminServiceImpl implements AdminService {
         senderService.execute(deleteMyCommands);
     }
 
-    @Scheduled(cron = "0 0 0 * * ?") // Every day at midnight
+    @Scheduled(cron = "0 */1 * * * ?")
     public void autoBanTaxis() {
         List<TaxiEntity> taxis = taxiService
                 .findAll();
 
         for (TaxiEntity taxi : taxis) {
+            if (taxi.getDuration() == 2) {
+                senderService.sendMessage(taxi.getChatId(), AdminComponents.CAN_BANNED + ADMIN_ID);
+                senderService.sendMessage(ADMIN_ID, "sent attenttion to taxi ID: " + taxi.getChatId());
+            }
+
             if (taxi.getDuration() > 0) {
                 taxi.setDuration(taxi.getDuration() - 1);
                 taxiService.save(taxi);
+                senderService.sendMessage(ADMIN_ID, "incremented duration");
             } else if (taxi.getDuration() == 0) {
                 banTaxi(taxi.getChatId());
                 taxi.setStatus(false);
                 taxiService.save(taxi);
+                senderService.sendMessage(ADMIN_ID, "banned taxi ID: " + taxi.getChatId());
             }
-            if (taxi.getDuration() == 2) {
-                senderService.sendMessage(taxi.getChatId(), AdminComponents.CAN_BANNED + ADMIN_ID);
-            }
+            senderService.sendMessage(ADMIN_ID, "autoban worked");
         }
     }
 
@@ -278,8 +283,10 @@ public class AdminServiceImpl implements AdminService {
         taxi.setStatus(true);
         taxiService.save(taxi);
 
-        UserEntity userById = authService.getUserById(taxiId);
-        senderService.sendMenu(userById, AdminComponents.DURATION_EXTENDED + taxi.getDuration() + "kun");
+        if (duration > 0) {
+            UserEntity userById = authService.getUserById(taxiId);
+            senderService.sendMenu(userById, AdminComponents.DURATION_EXTENDED + taxi.getDuration() + "kun");
+        }
     }
 
     public void unbanTaxi(Long taxiId) {
