@@ -14,7 +14,6 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.commands.DeleteMyCommands;
@@ -117,8 +116,8 @@ public class AdminServiceImpl implements AdminService {
     private void sendLink(Long chatId) {
         TaxiEntity byId = taxiService.getById(chatId);
         if (byId.getStatus()) {
-            unbanTaxi(chatId);
-//            senderService.sendMessage(chatId, getInviteLink());
+            unban(TAXI_GROUP_ID, chatId);
+            senderService.sendMessage(chatId, getInviteLink());
         }
     }
 
@@ -319,13 +318,9 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    @Transactional
     public void unbanTaxi(Long taxiId) {
-        UnbanChatMember unbanChatMember = new UnbanChatMember();
-        unbanChatMember.setChatId(TAXI_GROUP_ID); // The ID of the group
-        unbanChatMember.setUserId(taxiId);  // The ID of the taxi (user) to unban
-        unbanChatMember.setOnlyIfBanned(true);
-
-        senderService.execute(unbanChatMember);
+        unban(TAXI_GROUP_ID, taxiId);
         senderService.sendMessage(taxiId, AdminComponents.UNBANNED);
 
         TaxiEntity taxi = taxiService.getById(taxiId);
@@ -334,6 +329,15 @@ public class AdminServiceImpl implements AdminService {
         taxiService.save(taxi);
 
         senderService.sendMessage(taxiId, AdminComponents.ENTER_THE_GROUP + getInviteLink());
+    }
+
+    private void unban(Long taxiGroupId, Long taxiId) {
+        UnbanChatMember unbanChatMember = new UnbanChatMember();
+        unbanChatMember.setChatId(TAXI_GROUP_ID); // The ID of the group
+        unbanChatMember.setUserId(taxiId);  // The ID of the taxi (user) to unban
+        unbanChatMember.setOnlyIfBanned(true);
+
+        senderService.execute(unbanChatMember);
     }
 
     private String getInviteLink() {
