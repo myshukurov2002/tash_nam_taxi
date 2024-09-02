@@ -117,7 +117,8 @@ public class AdminServiceImpl implements AdminService {
     private void sendLink(Long chatId) {
         TaxiEntity byId = taxiService.getById(chatId);
         if (byId.getStatus()) {
-            senderService.sendMessage(chatId, getInviteLink());
+            unbanTaxi(chatId);
+//            senderService.sendMessage(chatId, getInviteLink());
         }
     }
 
@@ -339,9 +340,8 @@ public class AdminServiceImpl implements AdminService {
 
         CreateChatInviteLink createInviteLink = new CreateChatInviteLink();
         createInviteLink.setChatId(TAXI_GROUP_ID);
-            createInviteLink.setCreatesJoinRequest(true);
         createInviteLink.setName("taxi");
-//        createInviteLink.setMemberLimit(1);
+        createInviteLink.setMemberLimit(1);
         Instant expireTime = Instant
                 .now()
                 .plus(1, ChronoUnit.DAYS);
