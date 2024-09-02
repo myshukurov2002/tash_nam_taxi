@@ -339,13 +339,12 @@ public class AdminServiceImpl implements AdminService {
 
         CreateChatInviteLink createInviteLink = new CreateChatInviteLink();
         createInviteLink.setChatId(TAXI_GROUP_ID);
-//            createInviteLink.setCreatesJoinRequest(true);
+            createInviteLink.setCreatesJoinRequest(true);
         createInviteLink.setName("taxi");
-        createInviteLink.setMemberLimit(1);
+//        createInviteLink.setMemberLimit(1);
         Instant expireTime = Instant
                 .now()
                 .plus(1, ChronoUnit.DAYS);
-
         return senderService
                 .execute(createInviteLink)
                 .getInviteLink();
