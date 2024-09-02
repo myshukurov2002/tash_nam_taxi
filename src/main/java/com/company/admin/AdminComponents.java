@@ -22,4 +22,5 @@ public interface AdminComponents {
     String GET = "/get";
     String GET_ALL = "/get-all";
     String DELETE = "/delete";
+    String LINK = "/link";
 }

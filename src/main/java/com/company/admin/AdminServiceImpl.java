@@ -100,6 +100,9 @@ public class AdminServiceImpl implements AdminService {
                 case AdminComponents.DELETE -> {
                     delete(Long.valueOf(words[1]));
                 }
+                case AdminComponents.LINK -> {
+                    sendLink(Long.valueOf(words[1]));
+                }
                 default -> {
                     senderService.sendMessage(adminId, WRONG_ANSWER);
                 }
@@ -111,6 +114,13 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    private void sendLink(Long chatId) {
+        TaxiEntity byId = taxiService.getById(chatId);
+        if (byId.getStatus()) {
+            senderService.sendMessage(chatId, getInviteLink());
+        }
+    }
+
     @Transactional
     void delete(Long chatId) {
         TaxiEntity taxi = taxiService.getById(chatId);
@@ -119,6 +129,7 @@ public class AdminServiceImpl implements AdminService {
             taxiService.deleteByChatId(taxi);
             clientService.deleteByChatId(chatId);
             authService.deleteByChatId(chatId);
+            senderService.sendMessage(ADMIN_ID, "deleted ID: " + chatId);
         } catch (Exception e) {
             log.error(e.getMessage());
             senderService.sendMessage(ADMIN_ID, "<code>" + e.getMessage() + "</code>");
