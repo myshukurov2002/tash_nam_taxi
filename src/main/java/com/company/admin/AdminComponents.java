@@ -21,4 +21,5 @@ public interface AdminComponents {
     String SEND = "/send";
     String GET = "/get";
     String GET_ALL = "/get-all";
+    String DELETE = "/delete";
 }

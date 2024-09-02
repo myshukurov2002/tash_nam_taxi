@@ -44,7 +44,6 @@ public class TaxiServiceImpl implements TaxiService {
     private final SenderService senderService;
     private final AttachService attachService;
     private final ClientService clientService;
-
     private final UserRepository userRepository;
 
     @Value("${from}")

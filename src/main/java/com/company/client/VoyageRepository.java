@@ -17,4 +17,6 @@ public interface VoyageRepository extends JpaRepository<VoyageEntity, Long> {
 
     Optional<VoyageEntity> findFirstByIdAndVisibilityTrueOrderByCreatedDateDesc(Long voyageId);
     Optional<VoyageEntity> findFirstByIdAndVoyageStateOrderByCreatedDateDesc(Long voyageId, VoyageState accepted);
+
+    void deleteAllByClientId(Long chatId);
 }

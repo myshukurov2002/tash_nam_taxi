@@ -5,6 +5,7 @@ import com.company.auth.components.UserEntity;
 import com.company.auth.components.UserRole;
 import com.company.auth.components.UserState;
 import com.company.auth.service.AuthService;
+import com.company.client.service.ClientService;
 import com.company.components.Components;
 import com.company.sender.SenderService;
 import com.company.taxi.components.TaxiEntity;
@@ -46,6 +47,7 @@ public class AdminServiceImpl implements AdminService {
     private final AuthService authService;
     private final SenderService senderService;
     private final TaxiService taxiService;
+    private final ClientService clientService;
     private BotController botController;
 
     @Value("${admin.username}")
@@ -95,6 +97,9 @@ public class AdminServiceImpl implements AdminService {
                 case AdminComponents.CARD -> {
                     sendCard(Long.valueOf(words[1]));
                 }
+                case AdminComponents.DELETE -> {
+                    delete(Long.valueOf(words[1]));
+                }
                 default -> {
                     senderService.sendMessage(adminId, WRONG_ANSWER);
                 }
@@ -104,6 +109,22 @@ public class AdminServiceImpl implements AdminService {
             log.error(e.getMessage());
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
         }
+    }
+
+    @Transactional
+    void delete(Long chatId) {
+        TaxiEntity taxi = taxiService.getById(chatId);
+
+        try {
+            taxiService.deleteByChatId(taxi);
+            clientService.deleteByChatId(chatId);
+            authService.deleteByChatId(chatId);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            senderService.sendMessage(ADMIN_ID, "<code>" + e.getMessage() + "</code>");
+        }
+
+
     }
 
     private void getAll(Long adminId) {
@@ -281,7 +302,8 @@ public class AdminServiceImpl implements AdminService {
 
         if (duration > 0) {
             UserEntity userById = authService.getUserById(taxiId);
-            senderService.sendMenu(userById, AdminComponents.DURATION_EXTENDED + taxi.getDuration() + "kun");
+            senderService.sendMessage(taxiId, AdminComponents.DURATION_EXTENDED + taxi.getDuration() + "kun");
+            senderService.sendMenu(userById, AdminComponents.JOIN_GROUP + getInviteLink());
         }
     }
 

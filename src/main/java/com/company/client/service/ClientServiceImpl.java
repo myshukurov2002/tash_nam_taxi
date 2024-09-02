@@ -240,6 +240,14 @@ public class ClientServiceImpl implements ClientService {
                 .orElseThrow();
     }
 
+    @Override
+    @Transactional
+    public void deleteByChatId(Long chatId) {
+            voyageRepository
+                    .deleteAllByClientId(chatId);
+            clientRepository.deleteById(chatId);
+    }
+
     private VoyageEntity getVoyage(Long chatId, String queryId, Integer messageId, UserEntity user) {
         return voyageRepository
                 .findFirstByClientIdAndVisibilityTrueOrderByCreatedDateDesc(chatId)

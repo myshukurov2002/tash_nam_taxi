@@ -19,4 +19,6 @@ public interface AuthService {
     UserEntity getUserById(Long chatId, String firstName);
 
     List<UserEntity> getAll();
+
+    void deleteByChatId(Long chatId);
 }

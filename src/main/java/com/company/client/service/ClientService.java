@@ -10,4 +10,6 @@ public interface ClientService {
 
     void handleCallbackQuery(UserEntity user, CallbackQuery callbackQuery);
     VoyageEntity getVoyage(Long voyageId);
+
+    void deleteByChatId(Long chatId);
 }

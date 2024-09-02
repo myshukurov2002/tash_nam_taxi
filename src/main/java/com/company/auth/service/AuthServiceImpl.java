@@ -137,6 +137,12 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.findAll();
     }
 
+    @Override
+    public void deleteByChatId(Long chatId) {
+        userRepository
+                .deleteById(chatId);
+    }
+
     public UserEntity getUserById(Long chatId) {
 
         return userRepository
