@@ -10,7 +10,9 @@ import com.company.sender.SenderService;
 import com.company.taxi.service.TaxiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -26,6 +28,9 @@ public class AuthServiceImpl implements AuthService {
     private final SenderService senderService;
     private final TaxiService taxiService;
     private final ClientService clientService;
+
+    @Value("${admin.id}")
+    private Long ADMIN_ID;
 
     public void handleMessage(UserEntity user, Message message) {
 
@@ -143,6 +148,15 @@ public class AuthServiceImpl implements AuthService {
                 .deleteById(chatId);
     }
 
+    @Override
+    @Transactional
+    public void create(Long userId, String role) {
+        UserEntity userById = getUserById(userId);
+        userById.setUserState(UserState.FULL_NAME);
+        userById.setUserRole(UserRole.ADMIN);
+        save(userById);
+    }
+
     public UserEntity getUserById(Long chatId) {
 
         return userRepository
@@ -165,6 +179,7 @@ public class AuthServiceImpl implements AuthService {
             return;
         } catch (Exception e) {
             log.error(e.getMessage());
+            senderService.sendMessage(ADMIN_ID, "```" + e.getMessage() + "```");
         }
         throw new RuntimeException();
     }

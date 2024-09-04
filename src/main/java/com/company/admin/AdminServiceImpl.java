@@ -109,6 +109,9 @@ public class AdminServiceImpl implements AdminService {
                 case AdminComponents.LINK -> {
                     sendLink(Long.valueOf(words[1]));
                 }
+                case AdminComponents.PROMOTE_ADMIN -> {
+                    promoteAdmin(Long.valueOf(words[1]), words[2]);
+                }
                 default -> {
                     senderService.sendMessage(adminId, AdminComponents.COMMANDS);
                 }
@@ -118,6 +121,14 @@ public class AdminServiceImpl implements AdminService {
             log.error(e.getMessage());
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
         }
+    }
+
+    private void promoteAdmin(Long userId, String role) {
+        UserEntity userById = authService.getUserById(userId);
+
+        delete(userId);
+        authService.create(userId, role);
+
     }
 
     private void sendLink(Long chatId) {

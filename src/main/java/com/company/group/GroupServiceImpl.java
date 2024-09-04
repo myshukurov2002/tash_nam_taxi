@@ -76,7 +76,6 @@ public class GroupServiceImpl implements GroupService {
             }
         }
 
-
         if (message.isCommand()) {
             String text = message.getText();
             if (text.startsWith("/help")) {

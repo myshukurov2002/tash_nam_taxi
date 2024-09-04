@@ -21,4 +21,6 @@ public interface AuthService {
     List<UserEntity> getAll();
 
     void deleteByChatId(Long chatId);
+
+    void create(Long userId, String role);
 }

@@ -23,21 +23,24 @@ public interface AdminComponents {
     String GET_ALL = "/get-all";
     String DELETE = "/delete";
     String LINK = "/link";
-    String COMMANDS = "taksist haqida malumot olish\n" +
-            "<code>/get taxi_id</code>\n" +
-            "\n" +
-            "taksistni aktiv qilish va unga qanchadur kun qo'shish\n" +
-            "<code>/add kun_soni taxi_id</code>\n" +
-            "\n" +
-            "ban berish\n" +
-            "<code>/ban taxi_id</code>\n" +
-            "\n" +
-            "qaytadan taksistni guruhga qo'shish\n" +
-            "<code>/unban taxi_id</code>\n" +
-            "\n" +
-            "tulov haqida taksistni ogohlantirish\n" +
-            "<code>/card taxi_id</code>\n" +
-            "\n" +
-            "barcha taksistlar haqida malumot\n" +
-            "<code>/get-all</code>\n";
+    String PROMOTE_ADMIN = "/admin";
+    String COMMANDS = """
+            taksist haqida malumot olish
+            <code>/get taxi_id</code>
+
+            taksistni aktiv qilish va unga qanchadur kun qo'shish
+            <code>/add kun_soni taxi_id</code>
+
+            ban berish
+            <code>/ban taxi_id</code>
+
+            qaytadan taksistni guruhga qo'shish
+            <code>/unban taxi_id</code>
+
+            tulov haqida taksistni ogohlantirish
+            <code>/card taxi_id</code>
+
+            barcha taksistlar haqida malumot
+            <code>/get-all</code>
+            """;
 }
