@@ -90,8 +90,8 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @SneakyThrows
-    public void sendMessage(Long chatId, String message) {
-        botController.execute(getSendMessage(chatId, message));
+    public Message sendMessage(Long chatId, String message) {
+        return botController.execute(getSendMessage(chatId, message));
     }
 
     @SneakyThrows

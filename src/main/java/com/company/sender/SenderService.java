@@ -30,7 +30,7 @@ public interface SenderService {
 
     void sendMessage(Long chatId, String message, ReplyKeyboardMarkup menu);
 
-    void sendMessage(Long chatId, String text);
+    Message sendMessage(Long chatId, String text);
 
     void askUserType(Long chatId, String askUserType);
 

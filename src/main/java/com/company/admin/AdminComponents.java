@@ -43,4 +43,8 @@ public interface AdminComponents {
             barcha taksistlar haqida malumot
             <code>/get-all</code>
             """;
+    String STARTUP = "/startup";
+    String RESTART = "/restart";
+    String SHUTDOWN = "/shutdown";
+    String RUN = "/run";
 }

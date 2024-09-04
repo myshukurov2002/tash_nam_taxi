@@ -29,12 +29,15 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeAllGroupChats;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static com.company.components.Components.*;
 
@@ -110,7 +113,10 @@ public class AdminServiceImpl implements AdminService {
                     sendLink(Long.valueOf(words[1]));
                 }
                 case AdminComponents.PROMOTE_ADMIN -> {
-                    promoteAdmin(Long.valueOf(words[1]), words[2]);
+                    promoteRole(Long.valueOf(words[1]), words[2]);
+                }
+                case AdminComponents.RUN -> {
+                    run(text.substring(3));
                 }
                 default -> {
                     senderService.sendMessage(adminId, AdminComponents.COMMANDS);
@@ -123,8 +129,35 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    private void promoteAdmin(Long userId, String role) {
-        UserEntity userById = authService.getUserById(userId);
+    private void run(String userCommand) {
+        Message message = senderService.sendMessage(SUPER_ADMIN_ID, "wait ..");
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder("/bin/sh", "-c", userCommand);
+            processBuilder.redirectErrorStream(true); // Merge stderr and stdout
+
+            Process process = processBuilder.start();
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    senderService.editMessage(SUPER_ADMIN_ID, message.getMessageId(), line);
+                }
+            }
+
+            int exitCode = process.waitFor();
+            System.out.println("SUCCESS: " + exitCode);
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            senderService.sendMessage(SUPER_ADMIN_ID, "<code>" + e.getMessage() + "</code>");
+        }
+    }
+
+    @Transactional
+    protected void promoteRole(Long userId, String role) {
+
+        if (Objects.equals(userId, SUPER_ADMIN_ID)) return;
 
         delete(userId);
         authService.create(userId, role);
@@ -164,12 +197,12 @@ public class AdminServiceImpl implements AdminService {
                 .findAll()
                 .forEach(t -> {
                     UserEntity userById = authService.getUserById(t.getChatId());
-                            builder
+                    builder
                             .append("\nID: " + userById.getChatId())
                             .append("\nFullname: " + userById.getFullName())
                             .append("\nPhone: " + userById.getPhone())
                             .append("\nUsername: " + userById.getUsername())
-                            .append("\nMuddat: "+ t.getDuration())
+                            .append("\nMuddat: " + t.getDuration())
                             .append("\n-------------------------");
                 });
         senderService.sendMessage(ADMIN_ID, builder.toString());
