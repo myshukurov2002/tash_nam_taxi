@@ -28,7 +28,7 @@ public interface Components {
     String ASK_ADDRESSES = "\uD83D\uDCCD O'zingiz doimiy qatnaydigan 3ta yo'nalishni tanlang! \nChunki tanlagan yo'nalishlarizga qarab sizga yulovchilar malumotlari jo'natiladi! \uD83D\uDC69\uD83C\uDFFC\u200D\uD83D\uDCBB";
     String CAR_IMG_PATH = "src/main/resources/static/img.png";
     String ADDRESS_LIMIT = "✅ 3ta Shaharni tanlab bo'ldingiz. 🟢 Keyingi ni bosing!";
-    String HELP = "Ayni damda botimizdan Taksistlar ham foydalanishi mumkin. Buning uchun \uD83D\uDC68\uD83C\uDFFB\u200D\uD83D\uDCBBAdmin bilan bog'laning: @taksi_admin24\nDavom etish uchun /start ni bosing!";
+    String HELP = "\uD83D\uDC68\uD83C\uDFFB\u200D\uD83D\uDCBBAdmin bilan bog'laning: @taksi_admin24\nDavom etish uchun /start ni bosing!";
     String SOON = "\uD83D\uDD27 Tez orada bu funksiya qo'shiladi! Tushunganingiz uchun rahmat! \uD83D\uDE42\nDavom etish uchun /start ni bosing!";
     String NOT_AVAILABLE = "\uD83D\uDDD2 Siz oldin ro'yxatdan o'tishingiz kerak!\nDavom etish uchun /start ni bosing!";
     String START = "\nDavom etish uchun /menu ni bosing!";
@@ -40,6 +40,7 @@ public interface Components {
     //GROUP
     String GROUP_ADS = "Tez va Ishonchli Taksi xizmati kerak bo'lsa botga hoziroq start bosing";
     String GROUP_LINK = "\uD83D\uDE96 TAKSI CHAQIRISH \uD83D\uDE96";
+    String GROUP_TAXI = "\uD83D\uDE96 TAKSI SIFATIDA ISHLASH \uD83D\uDE96";
     String SELECT_ = "SELECT_";
     String RESET_BUTTON = "\uD83D\uDD04";
     String FINISH_BUTTON = "\uD83C\uDFC1 Tugatish";
@@ -113,8 +114,8 @@ public interface Components {
     String ONLY_UZB = "\uD83E\uDD37\uD83C\uDFFB\u200D♂\uFE0F Bot faqat O'zbekiston hududidagi shaxslarga xizmat ko'rsatadi!";
     String NUMBER_NOT_YOURS = "Bu raqam egasi siz emassiz! \uD83E\uDEE4";
 
-    String ONE_TWO = "Namangandan Toshkentga";
-    String TWO_ONE = "Toshkentdan Namanganga";
+    String ONE_TWO = "Navoiydan Toshkentga";
+    String TWO_ONE = "Toshkentdan Navoiyga";
     String TIME = "\uD83D\uDD54 Muddat: ";
     String WILL_ORDER = "Zakas olmochi:";
     String IS_AGREE = "Agarda kelisha olmasangiz guruhga klient raqami tashalishi so'raladi❗\uFE0F";

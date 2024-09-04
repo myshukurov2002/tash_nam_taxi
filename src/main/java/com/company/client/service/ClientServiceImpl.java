@@ -141,7 +141,6 @@ public class ClientServiceImpl implements ClientService {
 
         VoyageEntity voyage = getPeopleOrPoster(chatId);
         String data = callbackQuery.getData();
-
         switch (data) {
             case Components.ONE_TWO, Components.TWO_ONE -> {
                 voyage.setFromTo(data);

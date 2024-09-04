@@ -45,8 +45,8 @@ public class BotController extends TelegramLongPollingBot {
     private GroupService groupService;
 
     public BotController() {
-        setPrivateChatCommands();
-        removeGroupChatCommands();
+//        setPrivateChatCommands();
+//        removeGroupChatCommands();
     }
 
     @Override

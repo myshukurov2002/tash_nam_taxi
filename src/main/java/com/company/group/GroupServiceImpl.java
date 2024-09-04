@@ -55,7 +55,7 @@ public class GroupServiceImpl implements GroupService {
         Long chatId = chat.getId();
         Long userId = message.getFrom().getId();
         Integer messageId = message.getMessageId();
-
+        System.out.println(chatId);
         if (chatId.equals(TAXI_GROUP_ID)) {
 
 //           if (message.isReply()) {
@@ -90,7 +90,7 @@ public class GroupServiceImpl implements GroupService {
             Message executed = senderService
                     .sendMessage(chatId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
 //            senderService.replyMessage(chatId, messageId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
-//            senderService.deleteMessage(chatId, message.getMessageId());
+            senderService.deleteMessage(chatId, message.getMessageId());
         }
     }
 
@@ -145,14 +145,23 @@ public class GroupServiceImpl implements GroupService {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row1 = new ArrayList<>();
-        InlineKeyboardButton inlineKeyboardButton = InlineKeyboardButton
+        InlineKeyboardButton client = InlineKeyboardButton
                 .builder()
                 .text(Components.GROUP_LINK)
                 .url(BOT_URL)
                 .build();
-
-        row1.add(inlineKeyboardButton);
+        row1.add(client);
         rows.add(row1);
+
+        InlineKeyboardButton taxi = InlineKeyboardButton
+                .builder()
+                .text(Components.GROUP_TAXI)
+                .url(BOT_URL)
+                .build();
+        row1 = new ArrayList<>();
+        row1.add(client);
+        rows.add(row1);
+
         inlineKeyboardMarkup.setKeyboard(rows);
 
         return inlineKeyboardMarkup;

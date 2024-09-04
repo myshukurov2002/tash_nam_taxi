@@ -43,6 +43,13 @@ import static com.company.components.Components.*;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
+    @Value("${admin.name}")
+    private String ADMIN_NAME;
+    @Value("${admin.phone}")
+    private String ADMIN_PHONE;
+    @Value("${admin.id}")
+    private Long ADMIN_ID;
+
     private final AuthService authService;
     private final SenderService senderService;
     private final TaxiService taxiService;
@@ -68,7 +75,7 @@ public class AdminServiceImpl implements AdminService {
         String text = message.getText();
         String[] words = text.split(" ");
         Long adminId = admin.getChatId();
-
+        System.out.println(adminId);
         try {
             switch (words[0]) {
                 case AdminComponents.BAN -> {
@@ -103,7 +110,7 @@ public class AdminServiceImpl implements AdminService {
                     sendLink(Long.valueOf(words[1]));
                 }
                 default -> {
-                    senderService.sendMessage(adminId, WRONG_ANSWER);
+                    senderService.sendMessage(adminId, AdminComponents.COMMANDS);
                 }
             }
         } catch (Exception e) {
@@ -126,6 +133,7 @@ public class AdminServiceImpl implements AdminService {
         TaxiEntity taxi = taxiService.getById(chatId);
 
         try {
+            unban(TAXI_GROUP_ID, chatId);
             taxiService.deleteByChatId(taxi);
             clientService.deleteByChatId(chatId);
             authService.deleteByChatId(chatId);
@@ -237,9 +245,9 @@ public class AdminServiceImpl implements AdminService {
             UserEntity admin = UserEntity.builder()
                     .chatId(ADMIN_ID)
                     .userRole(UserRole.ADMIN)
-                    .phone("+998772872345")
+                    .phone(ADMIN_PHONE)
                     .userState(UserState.REGISTRATION_DONE)
-                    .fullName("Tez Taksi ADMIN")
+                    .fullName(ADMIN_NAME)
                     .build();
             admin.setCreatedDate(LocalDateTime.now());
 
@@ -333,7 +341,7 @@ public class AdminServiceImpl implements AdminService {
 
     private void unban(Long taxiGroupId, Long taxiId) {
         UnbanChatMember unbanChatMember = new UnbanChatMember();
-        unbanChatMember.setChatId(TAXI_GROUP_ID); // The ID of the group
+        unbanChatMember.setChatId(taxiGroupId); // The ID of the group
         unbanChatMember.setUserId(taxiId);  // The ID of the taxi (user) to unban
         unbanChatMember.setOnlyIfBanned(true);
 

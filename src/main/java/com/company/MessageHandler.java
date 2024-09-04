@@ -48,6 +48,7 @@ public class MessageHandler {
             return;
         }
 
+
         switch (userRole) {
             case CLIENT -> clientService.handleMessage(user, message);
             case TAXIST -> taxiService.handleMessage(user, message);
