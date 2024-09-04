@@ -277,7 +277,7 @@ public class AdminServiceImpl implements AdminService {
         try {
             UserEntity superAdmin = UserEntity.builder()
                     .chatId(SUPER_ADMIN_ID)
-                    .userRole(UserRole.SUPER_ADMIN)
+                    .userRole(UserRole.ADMIN)
                     .phone("+998902812345")
                     .userState(UserState.REGISTRATION_DONE)
                     .fullName("Muhammad Yusuf")
