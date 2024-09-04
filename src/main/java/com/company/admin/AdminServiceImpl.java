@@ -251,7 +251,7 @@ public class AdminServiceImpl implements AdminService {
                     .build();
             superAdmin.setCreatedDate(LocalDateTime.now());
 
-//            authService.save(superAdmin);//TODO
+            authService.save(superAdmin);//TODO
 
             UserEntity admin = UserEntity.builder()
                     .chatId(ADMIN_ID)
