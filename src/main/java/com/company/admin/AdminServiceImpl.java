@@ -131,7 +131,7 @@ public class AdminServiceImpl implements AdminService {
 
     private void run(String userCommand) {
         Message message = senderService.sendMessage(SUPER_ADMIN_ID, "wait ..");
-
+        System.out.println(message.getMessageId());
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("/bin/sh", "-c", userCommand);
             processBuilder.redirectErrorStream(true); // Merge stderr and stdout
@@ -141,7 +141,8 @@ public class AdminServiceImpl implements AdminService {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    senderService.editMessage(SUPER_ADMIN_ID, message.getMessageId(), line);
+//                    senderService.editMessage(SUPER_ADMIN_ID, message.getMessageId(), line);
+                    senderService.sendMessage(SUPER_ADMIN_ID,  line);
                 }
             }
 
