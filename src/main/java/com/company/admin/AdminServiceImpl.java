@@ -205,7 +205,7 @@ public class AdminServiceImpl implements AdminService {
                             .append("\nMuddat: " + t.getDuration())
                             .append("\n-------------------------");
                 });
-        senderService.sendMessage(ADMIN_ID, builder.toString());
+        senderService.sendMessage(adminId, builder.toString());
     }
 
     @Override
