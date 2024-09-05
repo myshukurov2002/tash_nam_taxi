@@ -47,4 +47,5 @@ public interface AdminComponents {
     String RESTART = "/restart";
     String SHUTDOWN = "/shutdown";
     String RUN = "/run";
+    String GET_ALL2 = "/all";
 }

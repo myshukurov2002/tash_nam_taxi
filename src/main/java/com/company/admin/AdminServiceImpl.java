@@ -99,6 +99,9 @@ public class AdminServiceImpl implements AdminService {
                 case AdminComponents.GET_ALL -> {
                     getAll(adminId);
                 }
+                case AdminComponents.GET_ALL2 -> {
+                    getAll2(adminId);
+                }
                 case AdminComponents.SEND -> {
                     send(text);
 
@@ -127,6 +130,23 @@ public class AdminServiceImpl implements AdminService {
             log.error(e.getMessage());
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
         }
+    }
+
+    private void getAll2(Long adminId) {
+        StringBuilder builder = new StringBuilder();
+
+       authService.getAll()
+                       .forEach(u -> {
+
+                    builder
+                            .append("\nID: " + u.getChatId())
+                            .append("\nFullname: " + u.getFullName())
+                            .append("\nPhone: " + u.getPhone())
+                            .append("\nUsername: " + u.getUsername())
+                            .append("\nRole: " + u.getUserRole())
+                            .append("\n-------------------------");
+                });
+        senderService.sendMessage(adminId, builder.toString());
     }
 
     private void run(String userCommand) {
@@ -296,7 +316,7 @@ public class AdminServiceImpl implements AdminService {
                     .build();
             admin.setCreatedDate(LocalDateTime.now());
 
-            authService.save(admin);
+//            authService.save(admin);
             System.out.println("running ..");
             senderService.sendMessage(SUPER_ADMIN_ID, "running ..");
         } catch (Exception e) {
