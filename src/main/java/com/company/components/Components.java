@@ -120,4 +120,5 @@ public interface Components {
     String WILL_ORDER = "Zakas olmochi:";
     String IS_AGREE = "Agarda kelisha olmasangiz guruhga klient raqami tashalishi so'raladi❗\uFE0F";
     String PL_INPUT = "Assalomu aleykum! Botimizdan foydalanish uchun so'ralgan malumotlarni to'ldirishingiz talab etiladi \uD83D\uDE42";
+    String GIVE_ADD = "\uD83D\uDCCC Elon berish";
 }

@@ -119,6 +119,9 @@ public class TaxiServiceImpl implements TaxiService {
                     }
 
                     case CONNECT_ADMIN -> senderService.sendMessage(chatId, HELP, getMenu());
+                    case GIVE_ADD -> {
+
+                    }
                     default -> {
                         if (text.equals(TAXIST)) {
                             if (taxi.getTaxiState().equals(TaxiState.TAXI_REGISTRATION_DONE)) {
@@ -288,6 +291,7 @@ public class TaxiServiceImpl implements TaxiService {
         row = new KeyboardRow();
 
         row.add(Components.CONNECT_ADMIN);
+        row.add(Components.GIVE_ADD);
         rows.add(row);
 
         replyKeyboardMarkup.setResizeKeyboard(true);

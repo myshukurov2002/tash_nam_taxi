@@ -270,6 +270,26 @@ public class SenderServiceImpl implements SenderService {
         row.add(twoOne);
         rows.add(row);
 
+        row = new ArrayList<>();
+        InlineKeyboardButton zarTosh = getInlineButton("Zarafshon", "Toshkent");
+        row.add(zarTosh);
+        rows.add(row);
+
+        row = new ArrayList<>();
+        InlineKeyboardButton toshZar = getInlineButton("Toshkent", "Zarafshon");
+        row.add(toshZar);
+        rows.add(row);
+
+        row = new ArrayList<>();
+        InlineKeyboardButton zarNav = getInlineButton("Zarafshon", "Navoiy");
+        row.add(twoOne);
+        rows.add(row);
+
+        row = new ArrayList<>();
+        InlineKeyboardButton navZar = getInlineButton("Navoiy", "Zarafshon");
+        row.add(twoOne);
+        rows.add(row);
+
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
     }

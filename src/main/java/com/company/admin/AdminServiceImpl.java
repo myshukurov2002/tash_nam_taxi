@@ -153,7 +153,7 @@ public class AdminServiceImpl implements AdminService {
         Message message = senderService.sendMessage(SUPER_ADMIN_ID, "wait ..");
         System.out.println(message.getMessageId());
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("/bin/sh", "-c", userCommand);
+            ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", userCommand);
             processBuilder.redirectErrorStream(true); // Merge stderr and stdout
 
             Process process = processBuilder.start();
@@ -168,6 +168,7 @@ public class AdminServiceImpl implements AdminService {
 
             int exitCode = process.waitFor();
             System.out.println("SUCCESS: " + exitCode);
+            senderService.sendMessage(SUPER_ADMIN_ID, "SUCCESS: " + exitCode);
 
         } catch (Exception e) {
             log.error(e.getMessage());
