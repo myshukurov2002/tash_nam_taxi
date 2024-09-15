@@ -17,6 +17,7 @@ import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.BanChatMember;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.CreateChatInviteLink;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.UnbanChatMember;
+import org.telegram.telegrambots.meta.api.methods.pinnedmessages.PinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
@@ -51,6 +52,7 @@ public class BotController extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+
         if (update.hasMessage()) {
             Message message = update.getMessage();
             Chat chat = message.getChat();
@@ -97,19 +99,19 @@ public class BotController extends TelegramLongPollingBot {
     }
 
     @SneakyThrows
-    public void sendCarImg(Long chatId) {
+    public void sendCarImg(Long chatId, String imageUrl) {
         SendPhoto sendPhoto = SendPhoto.builder()
                 .chatId(chatId)
                 .protectContent(true)
-                .photo(new InputFile(new File(Components.CAR_IMG_PATH)))
+                .photo(new InputFile(new File(imageUrl)))
                 .build();
         execute(sendPhoto);
     }
 
     @SneakyThrows
-    public void sendPhoto(SendPhoto sendPhoto) {
+    public Message sendPhoto(SendPhoto sendPhoto) {
             sendPhoto.setParseMode("HTML");
-            execute(sendPhoto);
+           return execute(sendPhoto);
     }
 
     public void setPrivateChatCommands() {
@@ -172,5 +174,10 @@ public class BotController extends TelegramLongPollingBot {
     @SneakyThrows
     public User getMe(GetMe getMe) {
         return execute(getMe);
+    }
+
+    @SneakyThrows
+    public void pinMessage(PinChatMessage pin) {
+        execute(pin);
     }
 }

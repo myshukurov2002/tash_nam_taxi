@@ -7,7 +7,6 @@ import com.company.auth.components.UserRole;
 import com.company.auth.components.UserState;
 import com.company.client.components.VoyageEntity;
 import com.company.client.service.ClientService;
-import com.company.components.Address;
 import com.company.components.Components;
 import com.company.expections.exp.AppBadRequestException;
 import com.company.sender.SenderService;
@@ -25,13 +24,16 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.company.components.Components.*;
+import static com.company.group.GroupServiceImpl.GROUP_IDS;
 
 
 @Service
@@ -56,6 +58,8 @@ public class TaxiServiceImpl implements TaxiService {
     private String ADMIN_USERNAME;
     @Value("${admin.id}")
     private String ADMIN_ID;
+    @Value(("${bot.url}"))
+    private String BOT_URL;
 
 
     @Override
@@ -71,7 +75,7 @@ public class TaxiServiceImpl implements TaxiService {
             case START -> {
 //                senderService.sendMessage(chatId, TAXI_START);
                 senderService.sendMessage(chatId, CAR_PHOTO);
-                senderService.sendCarImg(chatId);
+                senderService.sendImage(chatId,Components.CAR_IMG_PATH);
 
                 taxi.setTaxiState(TaxiState.CAR_PHOTO);
                 taxiRepository.save(taxi);
@@ -95,7 +99,7 @@ public class TaxiServiceImpl implements TaxiService {
                 taxiRepository.save(taxi);
 
                 senderService.deleteMessage(chatId, messageId);
-                senderService.sendMenu(user,  REQUEST_ADMIN + ADMIN_USERNAME);
+                senderService.sendMenu(user, REQUEST_ADMIN + ADMIN_USERNAME);
 
                 String status = (taxi.getStatus()) ? ALLOWED : NOT_ALLOWED;
                 sendRequestToAdmin(
@@ -120,7 +124,9 @@ public class TaxiServiceImpl implements TaxiService {
 
                     case CONNECT_ADMIN -> senderService.sendMessage(chatId, HELP, getMenu());
                     case GIVE_ADD -> {
-
+                        senderService.sendMessage(chatId, Components.TAXI_ADS + "\n\n\n" + Components.TAXI_ADS_EXAMPLE);
+                        taxi.setTaxiState(TaxiState.GIVE_ADD);
+                        save(taxi);
                     }
                     default -> {
                         if (text.equals(TAXIST)) {
@@ -146,6 +152,12 @@ public class TaxiServiceImpl implements TaxiService {
                     }
                 }
             }
+            case GIVE_ADD -> {
+                sendAds(taxi, message);
+                taxi.setTaxiState(TaxiState.TAXI_REGISTRATION_DONE);
+                save(taxi);
+                senderService.sendMessage(taxi.getChatId(), SUCCESS, getMenu());
+            }
 
             default -> {
                 if (text.equals(TAXIST)) {
@@ -170,6 +182,39 @@ public class TaxiServiceImpl implements TaxiService {
 //                senderService.sendMessage(chatId, Components.SHOULD_FILL);
             }
         }
+    }
+
+    private void sendAds(TaxiEntity taxi, Message message) {
+
+        GROUP_IDS.forEach(groupId -> {
+
+            SendPhoto sendPhoto = attachService.getSendPhoto(taxi.getChatId());
+
+            sendPhoto.setChatId(groupId);
+            sendPhoto.setCaption(String.valueOf(message.getText()));
+            sendPhoto.setProtectContent(true);
+            sendPhoto.setReplyMarkup(getAds());
+            senderService.sendPhoto(sendPhoto);
+        });
+    }
+
+    private ReplyKeyboard getAds() {
+
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        InlineKeyboardButton client = senderService.getInlineButton(Components.BOT_ADS, BOT_URL);
+        InlineKeyboardButton taxi = senderService.getInlineButton(BE_TAXI, BOT_URL);
+        row.add(client);
+        rows.add(row);
+
+        //TODO
+//        row = new ArrayList<>();
+//        row.add(taxi);
+//        rows.add(row);
+//        markup.setKeyboard(rows);
+
+        return markup;
     }
 
     public void getInfo(TaxiEntity taxi, Long chatId) {
@@ -250,7 +295,7 @@ public class TaxiServiceImpl implements TaxiService {
     public void sendVoyage(VoyageEntity voyage, Integer messageId) {//TODO
         System.out.println(TAXI_GROUP_ID);
 
-        String [] data = voyage
+        String[] data = voyage
                 .getData()
                 .split("\n");
         String temp = data[0] + "\n" + data[1] + "\n\n" + Components.WILL_ORDER;
@@ -272,8 +317,7 @@ public class TaxiServiceImpl implements TaxiService {
     public void save(TaxiEntity taxi) {
         try {
             taxiRepository.save(taxi);
-        }
-        catch (DataAccessException e) {
+        } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new AppBadRequestException();
         }
@@ -284,14 +328,14 @@ public class TaxiServiceImpl implements TaxiService {
         List<KeyboardRow> rows = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
 
-        row.add(PROFILE_INFO);
+        row.add(Components.GIVE_ADD);
         row.add(Components.MAIN_MENU);
 
         rows.add(row);
         row = new KeyboardRow();
 
+        row.add(PROFILE_INFO);
         row.add(Components.CONNECT_ADMIN);
-        row.add(Components.GIVE_ADD);
         rows.add(row);
 
         replyKeyboardMarkup.setResizeKeyboard(true);

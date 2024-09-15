@@ -25,11 +25,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -45,13 +43,14 @@ public class GroupServiceImpl implements GroupService {
     @Value("${taxi.group.id}")
     private Long TAXI_GROUP_ID;
 
+    public static Set<Long> GROUP_IDS = new HashSet<>();
+
     private final SenderService senderService;
     private final TaxiService taxiService;
     private final ClientService clientService;
     private final AuthService authService;
     @Override
     public void handle(Chat chat, Message message) {
-
         Long chatId = chat.getId();
         Long userId = message.getFrom().getId();
         Integer messageId = message.getMessageId();
@@ -69,6 +68,10 @@ public class GroupServiceImpl implements GroupService {
 //           }
             return;
         }
+
+
+        GROUP_IDS.add(chat.getId());
+
         if (taxiService.existsById(userId)) {
             TaxiEntity taxi = taxiService.getById(userId);
             if (taxi.getStatus()) {
@@ -86,6 +89,13 @@ public class GroupServiceImpl implements GroupService {
             }
         }
         if (!isUserAdmin(chatId, userId)) {
+
+            if (message.getText().length() > 40) {
+                senderService
+                        .sendMessage(chatId, Components.ATTENTION_TAXIST + "\n" + GROUP_LINK, getInlineButtonForGroup());
+                senderService.deleteMessage(chatId, message.getMessageId());
+                return;
+            }
             Message executed = senderService
                     .sendMessage(chatId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
 //            senderService.replyMessage(chatId, messageId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
@@ -139,7 +149,7 @@ public class GroupServiceImpl implements GroupService {
         return message.getChat().getId();
     }
 
-    private InlineKeyboardMarkup getInlineButtonForGroup() {
+    public InlineKeyboardMarkup getInlineButtonForGroup() {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
@@ -158,7 +168,7 @@ public class GroupServiceImpl implements GroupService {
                 .url(BOT_URL)
                 .build();
         row1 = new ArrayList<>();
-        row1.add(client);
+//        row1.add(taxi);
         rows.add(row1);
 
         inlineKeyboardMarkup.setKeyboard(rows);

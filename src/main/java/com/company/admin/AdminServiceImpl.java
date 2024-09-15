@@ -30,6 +30,7 @@ import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeAllGroupChats;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -119,7 +120,7 @@ public class AdminServiceImpl implements AdminService {
                     promoteRole(Long.valueOf(words[1]), words[2]);
                 }
                 case AdminComponents.RUN -> {
-                    run(text.substring(3));
+                    run(text.substring(5));
                 }
                 default -> {
                     senderService.sendMessage(adminId, AdminComponents.COMMANDS);
@@ -135,8 +136,8 @@ public class AdminServiceImpl implements AdminService {
     private void getAll2(Long adminId) {
         StringBuilder builder = new StringBuilder();
 
-       authService.getAll()
-                       .forEach(u -> {
+        authService.getAll()
+                .forEach(u -> {
 
                     builder
                             .append("\nID: " + u.getChatId())
@@ -150,29 +151,42 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void run(String userCommand) {
-        Message message = senderService.sendMessage(SUPER_ADMIN_ID, "wait ..");
-        System.out.println(message.getMessageId());
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", userCommand);
-            processBuilder.redirectErrorStream(true); // Merge stderr and stdout
+            Process proc = Runtime.getRuntime().exec(userCommand);
 
-            Process process = processBuilder.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
+            StringBuilder outputBuilder = new StringBuilder();
+            String line;
+
+            // Send the first line of the output
+            if ((line = reader.readLine()) != null) {
+                Message message = senderService.sendMessage(SUPER_ADMIN_ID, "<code>" + line + "</code>");
+
                 while ((line = reader.readLine()) != null) {
-//                    senderService.editMessage(SUPER_ADMIN_ID, message.getMessageId(), line);
-                    senderService.sendMessage(SUPER_ADMIN_ID,  line);
+                    outputBuilder.append(line).append("\n");
+
+                    if (outputBuilder.length() >= 3000) {
+                        senderService.editMessage(SUPER_ADMIN_ID, message.getMessageId(), "<code>" + outputBuilder.toString() + "</code>");
+                        outputBuilder.setLength(0); // Clear the buffer
+                    }
+                }
+
+                if (!outputBuilder.isEmpty()) {
+                    senderService.editMessage(SUPER_ADMIN_ID, message.getMessageId(), "<code>" + outputBuilder.toString() + "</code>");
                 }
             }
 
-            int exitCode = process.waitFor();
-            System.out.println("SUCCESS: " + exitCode);
-            senderService.sendMessage(SUPER_ADMIN_ID, "SUCCESS: " + exitCode);
+            // Read and handl error stream (if there is an error)
+            while ((line = errorReader.readLine()) != null) {
+                senderService.sendMessage(SUPER_ADMIN_ID, "<code>Error: " + line + "</code>");
+            }
 
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            senderService.sendMessage(SUPER_ADMIN_ID, "<code>" + e.getMessage() + "</code>");
+            proc.waitFor();
+        } catch (IOException | InterruptedException e) {
+            senderService.sendMessage(SUPER_ADMIN_ID, "<code>Command failed: " + e.getMessage() + "</code>");
+            throw new RuntimeException(e);
         }
     }
 

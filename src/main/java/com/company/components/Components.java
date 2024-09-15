@@ -1,7 +1,5 @@
 package com.company.components;
 
-import org.springframework.beans.factory.annotation.Value;
-
 public interface Components {
 
     //USER
@@ -18,7 +16,7 @@ public interface Components {
     String ERROR_READING_IMAGE = "\uD83D\uDE2C Error reading image file!";
     String ERROR_SEND_PHOTO = "\uD83D\uDE2C Failed to send photo!";
 
-    String MENU_BUTTON = "⚙️ Menyuga o'tish";
+    String MENU_BUTTON = "⚙️ Menyuga o'tish ";
     String OVERVIEW = "\uD83D\uDC47\uD83C\uDFFC Tugmani tanlang!";
 
 
@@ -27,6 +25,7 @@ public interface Components {
     String CAR_PHOTO = "\uD83D\uDE96 Mashinangiz Rasmini raqami ko'rinadigan tarafdan rasm olib botga jo'nating!\nMisol: \uD83D\uDC47\uD83C\uDFFC";
     String ASK_ADDRESSES = "\uD83D\uDCCD O'zingiz doimiy qatnaydigan 3ta yo'nalishni tanlang! \nChunki tanlagan yo'nalishlarizga qarab sizga yulovchilar malumotlari jo'natiladi! \uD83D\uDC69\uD83C\uDFFC\u200D\uD83D\uDCBB";
     String CAR_IMG_PATH = "src/main/resources/static/img.png";
+    String BOT_IMG_PATH = "src/main/resources/static/bot_ads.png";
     String ADDRESS_LIMIT = "✅ 3ta Shaharni tanlab bo'ldingiz. 🟢 Keyingi ni bosing!";
     String HELP = "\uD83D\uDC68\uD83C\uDFFB\u200D\uD83D\uDCBBAdmin bilan bog'laning: @taksi_admin24\nDavom etish uchun /start ni bosing!";
     String SOON = "\uD83D\uDD27 Tez orada bu funksiya qo'shiladi! Tushunganingiz uchun rahmat! \uD83D\uDE42\nDavom etish uchun /start ni bosing!";
@@ -38,7 +37,7 @@ public interface Components {
     String ILL_GET = "\uD83D\uDE96 ZAKAS OLISH \uD83D\uDE96";
 
     //GROUP
-    String GROUP_ADS = "Tez va Ishonchli Taksi xizmati kerak bo'lsa botga hoziroq start bosing";
+    String GROUP_ADS = "ZAKASLAR FAQAT BOT ORQALI QABUL QILINADI!!! \n\n Shafyor e'lonlari faqat bot orqali beriladi!";
     String GROUP_LINK = "\uD83D\uDE96 TAKSI CHAQIRISH \uD83D\uDE96";
     String GROUP_TAXI = "\uD83D\uDE96 TAKSI SIFATIDA ISHLASH \uD83D\uDE96";
     String SELECT_ = "SELECT_";
@@ -121,4 +120,10 @@ public interface Components {
     String IS_AGREE = "Agarda kelisha olmasangiz guruhga klient raqami tashalishi so'raladi❗\uFE0F";
     String PL_INPUT = "Assalomu aleykum! Botimizdan foydalanish uchun so'ralgan malumotlarni to'ldirishingiz talab etiladi \uD83D\uDE42";
     String GIVE_ADD = "\uD83D\uDCCC Elon berish";
+    String TAXI_ADS_EXAMPLE = "Assalomu aleykum\n Namangandan Toshkentga\n soat 02:00da yuramiz\n 2kishi srochni kerak!";
+    String TAXI_ADS = "E'loningizni quyidagicha to'ldiring!";
+    String BOT_ADS = "\uD83D\uDE96 Zakas Berish \uD83D\uDE96";
+    String BE_TAXI = "\uD83D\uDE96 Taksi sifatida ishlash \uD83D\uDE96";
+    String ATTENTION_ALL_TAXIST = "SHAFYORLAR DIQQATIGA❗\uFE0F";
+    String ATTENTION_TAXIST = "❗\uFE0F Elon berish faqat bot orqali amalga oshiriladi!";
 }

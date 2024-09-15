@@ -40,7 +40,7 @@ public interface SenderService {
 
     void sendKeyboardButton(Long chatId, String... menuButtons);
 
-    void sendCarImg(Long chatId);
+    void sendImage(Long chatId, String carImgPath);
 
     void deleteMessage(Long chatId, Integer messageId);
 
@@ -56,7 +56,7 @@ public interface SenderService {
 
     void editMessage(Long chatId, Integer messageId, String text);
 
-    void sendPhoto(SendPhoto sendPhoto);
+    Message sendPhoto(SendPhoto sendPhoto);
 
     void sendMenu(UserEntity user, String mainMenu);
 

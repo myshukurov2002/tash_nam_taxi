@@ -57,12 +57,17 @@ public class ClientServiceImpl implements ClientService {
         ClientState state = client.getState();
         Integer messageId = message.getMessageId();
 
+        System.out.println(message.getText());
+        senderService.sendMessage(chatId, message.getText());
+
         switch (state) {
             case START -> {
+
                 client.setState(ClientState.CLIENT_MENU);
                 clientRepository.save(client);
 
                 senderService.sendMenu(user, CLIENT_MENU);
+
             }
             case CLIENT_MENU -> {
                 switch (text) {
@@ -269,7 +274,6 @@ public class ClientServiceImpl implements ClientService {
                     return voyageRepository.save(newVoyage);
                 });
     }
-
 
     private InlineKeyboardMarkup getIsCorrect() {
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();

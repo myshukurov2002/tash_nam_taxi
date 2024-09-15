@@ -124,8 +124,8 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
-    public void sendCarImg(Long chatId) {
-        botController.sendCarImg(chatId);
+    public void sendImage(Long chatId, String imagePath) {
+        botController.sendCarImg(chatId, imagePath);
     }
 
     @Override
@@ -184,16 +184,16 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
-    public void sendPhoto(SendPhoto sendPhoto) {
+    public Message sendPhoto(SendPhoto sendPhoto) {
         sendPhoto.setParseMode("html");
-        botController.sendPhoto(sendPhoto);
+        return botController.sendPhoto(sendPhoto);
     }
 
     @Override
     public void sendMenu(UserEntity user, String mainMenu) {
         Long chatId = user.getChatId();
         if (Objects.requireNonNull(user.getUserRole()) == UserRole.TAXIST)
-            sendMessage(chatId, mainMenu, getAdminMenu());
+            sendMessage(chatId, mainMenu, getTaxiMenu());
         else sendMessage(chatId, mainMenu, getClientMenu());
     }
 
@@ -222,7 +222,7 @@ public class SenderServiceImpl implements SenderService {
     @Override
     public void sendMessageWithMenu(Long chatId, String text) {
         SendMessage sendMessage = getSendMessage(chatId, text);
-        sendMessage.setReplyMarkup(getAdminMenu());
+        sendMessage.setReplyMarkup(getTaxiMenu());
         sendMessage(sendMessage);
     }
 
@@ -270,25 +270,25 @@ public class SenderServiceImpl implements SenderService {
         row.add(twoOne);
         rows.add(row);
 
-        row = new ArrayList<>();
-        InlineKeyboardButton zarTosh = getInlineButton("Zarafshon", "Toshkent");
-        row.add(zarTosh);
-        rows.add(row);
-
-        row = new ArrayList<>();
-        InlineKeyboardButton toshZar = getInlineButton("Toshkent", "Zarafshon");
-        row.add(toshZar);
-        rows.add(row);
-
-        row = new ArrayList<>();
-        InlineKeyboardButton zarNav = getInlineButton("Zarafshon", "Navoiy");
-        row.add(twoOne);
-        rows.add(row);
-
-        row = new ArrayList<>();
-        InlineKeyboardButton navZar = getInlineButton("Navoiy", "Zarafshon");
-        row.add(twoOne);
-        rows.add(row);
+//        row = new ArrayList<>();
+//        InlineKeyboardButton zarTosh = getInlineButton("Zarafshon", "Toshkent");
+//        row.add(zarTosh);
+//        rows.add(row);
+//
+//        row = new ArrayList<>();
+//        InlineKeyboardButton toshZar = getInlineButton("Toshkent", "Zarafshon");
+//        row.add(toshZar);
+//        rows.add(row);
+//
+//        row = new ArrayList<>();
+//        InlineKeyboardButton zarNav = getInlineButton("Zarafshon", "Navoiy");
+//        row.add(twoOne);
+//        rows.add(row);
+//
+//        row = new ArrayList<>();
+//        InlineKeyboardButton navZar = getInlineButton("Navoiy", "Zarafshon");
+//        row.add(twoOne);
+//        rows.add(row);
 
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
@@ -334,7 +334,7 @@ public class SenderServiceImpl implements SenderService {
         PinChatMessage pin = PinChatMessage.builder()
                 .chatId(chatId)
                 .messageId(messageId).build();
-        botController.execute(pin);
+        botController.pinMessage(pin);
     }
 
     @Override
@@ -463,17 +463,17 @@ public class SenderServiceImpl implements SenderService {
         return keyboardRow;
     }
 
-    public ReplyKeyboardMarkup getAdminMenu() {
+    public ReplyKeyboardMarkup getTaxiMenu() {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> rows = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
 
-        row.add(PROFILE_INFO);
+        row.add(Components.GIVE_ADD);
         row.add(Components.MAIN_MENU);
-
         rows.add(row);
         row = new KeyboardRow();
-
+//
+        row.add(PROFILE_INFO);
         row.add(Components.CONNECT_ADMIN);
         rows.add(row);
 
