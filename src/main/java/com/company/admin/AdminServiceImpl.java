@@ -49,8 +49,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Value("${admin.name}")
     private String ADMIN_NAME;
-    @Value("${admin.phone}")
-    private String ADMIN_PHONE;
+//    @Value("${admin.phone}")
+//    private String ADMIN_PHONE;
     @Value("${admin.id}")
     private Long ADMIN_ID;
 
@@ -325,7 +325,7 @@ public class AdminServiceImpl implements AdminService {
             UserEntity admin = UserEntity.builder()
                     .chatId(ADMIN_ID)
                     .userRole(UserRole.ADMIN)
-                    .phone(ADMIN_PHONE)
+//                    .phone(ADMIN_PHONE)
                     .userState(UserState.REGISTRATION_DONE)
                     .fullName(ADMIN_NAME)
                     .build();
