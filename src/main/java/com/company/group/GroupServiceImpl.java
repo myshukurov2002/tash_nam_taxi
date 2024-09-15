@@ -93,13 +93,13 @@ public class GroupServiceImpl implements GroupService {
             if (message.getText().length() > 40) {
                 senderService
                         .sendMessage(chatId, Components.ATTENTION_TAXIST + "\n" + GROUP_LINK, getInlineButtonForGroup());
-                senderService.deleteMessage(chatId, message.getMessageId());
+//                senderService.deleteMessage(chatId, message.getMessageId());
                 return;
             }
             Message executed = senderService
                     .sendMessage(chatId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
 //            senderService.replyMessage(chatId, messageId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
-            senderService.deleteMessage(chatId, message.getMessageId());
+//            senderService.deleteMessage(chatId, message.getMessageId());
         }
     }
 
