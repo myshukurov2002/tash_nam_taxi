@@ -331,7 +331,7 @@ public class AdminServiceImpl implements AdminService {
                     .build();
             admin.setCreatedDate(LocalDateTime.now());
 
-//            authService.save(admin);
+            authService.save(admin);
             System.out.println("running ..");
             senderService.sendMessage(SUPER_ADMIN_ID, "running ..");
         } catch (Exception e) {

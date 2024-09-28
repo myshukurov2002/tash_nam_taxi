@@ -8,7 +8,7 @@ import com.company.auth.service.AuthService;
 import com.company.client.components.VoyageEntity;
 import com.company.client.service.ClientService;
 import com.company.components.Components;
-import com.company.group.GroupService;
+import com.company.group.services.GroupService;
 import com.company.sender.SenderService;
 import com.company.taxi.service.TaxiService;
 import lombok.RequiredArgsConstructor;

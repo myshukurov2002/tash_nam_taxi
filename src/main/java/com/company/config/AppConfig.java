@@ -3,7 +3,7 @@ package com.company.config;
 import com.company.admin.AdminComponents;
 import com.company.admin.AdminService;
 import com.company.components.Components;
-import com.company.group.GroupService;
+import com.company.group.services.GroupService;
 import com.company.sender.SenderService;
 import com.company.taxi.components.TaxiEntity;
 import com.company.taxi.service.TaxiService;
@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.List;
 
 import static com.company.components.Components.ADMIN_ID;
-import static com.company.group.GroupServiceImpl.GROUP_IDS;
 
 @Configuration
 @EnableScheduling
@@ -53,15 +52,15 @@ public class AppConfig {
                 taxiService.save(taxi);
                 senderService.sendMessage(ADMIN_ID, "banned taxi ID: " + taxi.getChatId());
             }
-            senderService.sendMessage(ADMIN_ID, "autoban worked");
+//            senderService.sendMessage(ADMIN_ID, "autoban worked");
         }
     }
 
-    @Scheduled(fixedRate = 5 * 60 * 60 * 1000) // 5 hours in milliseconds
+    @Scheduled(fixedRate = 3 * 60 * 60 * 1000) // 5 hours in milliseconds
     public void sendMessage() {
-       GROUP_IDS.forEach(groupId -> {
+        groupService.getAll().forEach(group -> {
            SendPhoto sendPhoto = SendPhoto.builder()
-                   .chatId(groupId)
+                   .chatId(group.getGroupId())
                    .protectContent(true)
                    .caption(Components.ATTENTION_ALL_TAXIST)
                    .photo(new InputFile(new File(Components.BOT_IMG_PATH)))
@@ -69,7 +68,7 @@ public class AppConfig {
                    .build();
            Message message = senderService.sendPhoto(sendPhoto);
            Integer messageId = message.getMessageId();
-           senderService.pinMessage(groupId, messageId);
+           senderService.pinMessage(group.getGroupId(), messageId);
        });
     }
 

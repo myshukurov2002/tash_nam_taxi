@@ -193,7 +193,7 @@ public class SenderServiceImpl implements SenderService {
     public void sendMenu(UserEntity user, String mainMenu) {
         Long chatId = user.getChatId();
         if (Objects.requireNonNull(user.getUserRole()) == UserRole.TAXIST)
-            sendMessage(chatId, mainMenu, getTaxiMenu());
+             sendMessage(chatId, mainMenu, getTaxiMenu());
         else sendMessage(chatId, mainMenu, getClientMenu());
     }
 
@@ -468,12 +468,12 @@ public class SenderServiceImpl implements SenderService {
         List<KeyboardRow> rows = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
 
-        row.add(PROFILE_INFO);
+        row.add(Components.GIVE_ADD);
         row.add(Components.MAIN_MENU);
         rows.add(row);
         row = new KeyboardRow();
 //  TODO
-//        row.add(Components.GIVE_ADD);
+        row.add(PROFILE_INFO);
         row.add(Components.CONNECT_ADMIN);
         rows.add(row);
 

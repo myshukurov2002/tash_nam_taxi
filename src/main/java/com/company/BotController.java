@@ -2,7 +2,7 @@ package com.company;
 
 import com.company.client.components.VoyageEntity;
 import com.company.components.Components;
-import com.company.group.GroupService;
+import com.company.group.services.GroupService;
 import jakarta.annotation.PostConstruct;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

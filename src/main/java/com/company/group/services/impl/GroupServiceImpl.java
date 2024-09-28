@@ -1,10 +1,14 @@
-package com.company.group;
+package com.company.group.services.impl;
 
 import com.company.auth.components.UserEntity;
 import com.company.auth.service.AuthService;
 import com.company.client.components.VoyageEntity;
 import com.company.client.service.ClientService;
 import com.company.components.Components;
+import com.company.group.components.GroupEntity;
+import com.company.group.GroupRepository;
+import com.company.group.services.GroupCircular;
+import com.company.group.services.GroupService;
 import com.company.sender.SenderService;
 import com.company.taxi.components.TaxiEntity;
 import com.company.taxi.service.TaxiService;
@@ -25,15 +29,14 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class GroupServiceImpl implements GroupService {
 
+    private final GroupRepository groupRepository;
     @Value("${bot.username}")
     private String GROUP_LINK;
 
@@ -43,12 +46,13 @@ public class GroupServiceImpl implements GroupService {
     @Value("${taxi.group.id}")
     private Long TAXI_GROUP_ID;
 
-    public static Set<Long> GROUP_IDS = new HashSet<>();
-
     private final SenderService senderService;
     private final TaxiService taxiService;
     private final ClientService clientService;
     private final AuthService authService;
+
+    private final GroupCircular groupCircular;
+
     @Override
     public void handle(Chat chat, Message message) {
         Long chatId = chat.getId();
@@ -70,7 +74,7 @@ public class GroupServiceImpl implements GroupService {
         }
 
 
-        GROUP_IDS.add(chat.getId());
+        groupCircular.isExist(chatId);
 
         if (taxiService.existsById(userId)) {
             TaxiEntity taxi = taxiService.getById(userId);
@@ -90,16 +94,25 @@ public class GroupServiceImpl implements GroupService {
         }
         if (!isUserAdmin(chatId, userId)) {
 
-            if (message.getText().length() > 40) {
+            String text = message.getText();
+            if (message.getText().length() > 30) {
                 senderService
-                        .sendMessage(chatId, Components.ATTENTION_TAXIST + "\n" + GROUP_LINK, getInlineButtonForGroup());
+                        .sendMessage(chatId, Components.ATTENTION_TAXIST + "\n" + GROUP_LINK, getInlineButtonOrderForGroup(Components.CALL_BOT, BOT_URL));
 //                senderService.deleteMessage(chatId, message.getMessageId());
                 return;
+
+            } else if(groupCircular.checkKeyWord(text.toLowerCase())) {
+
+                senderService.forwardMessage(userId, messageId, TAXI_GROUP_ID);
+
+                Message executed = senderService
+                        .sendMessage(chatId, Components.GROUP_ADS2 + "\n" + GROUP_LINK, getInlineButtonForGroup());
+            senderService.deleteMessage(chatId, message.getMessageId());
+            return;
             }
             Message executed = senderService
-                    .sendMessage(chatId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
-//            senderService.replyMessage(chatId, messageId, Components.GROUP_ADS + "\n" + GROUP_LINK, getInlineButtonForGroup());
-//            senderService.deleteMessage(chatId, message.getMessageId());
+                    .sendMessage(chatId, Components.GROUP_ADS2 + "\n" + GROUP_LINK, getInlineButtonForGroup());
+            senderService.deleteMessage(chatId, message.getMessageId());
         }
     }
 
@@ -162,18 +175,32 @@ public class GroupServiceImpl implements GroupService {
         row1.add(client);
         rows.add(row1);
 
-        InlineKeyboardButton taxi = InlineKeyboardButton
+        inlineKeyboardMarkup.setKeyboard(rows);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup getInlineButtonOrderForGroup(String text, String url) {
+
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        InlineKeyboardButton client = InlineKeyboardButton
                 .builder()
-                .text(Components.GROUP_TAXI)
-                .url(BOT_URL)
+                .text(text)
+                .url(url)
                 .build();
-        row1 = new ArrayList<>();
-//        row1.add(taxi);
+        row1.add(client);
         rows.add(row1);
 
         inlineKeyboardMarkup.setKeyboard(rows);
 
         return inlineKeyboardMarkup;
+    }
+
+    @Override
+    public List<GroupEntity> getAll() {
+        return groupCircular.getAll();
     }
 
     private boolean isUserAdmin(long chatId, long userId) {

@@ -9,6 +9,7 @@ import com.company.client.components.VoyageEntity;
 import com.company.client.service.ClientService;
 import com.company.components.Components;
 import com.company.expections.exp.AppBadRequestException;
+import com.company.group.services.impl.GroupCircularImpl;
 import com.company.sender.SenderService;
 import com.company.taxi.TaxiRepository;
 import com.company.taxi.components.TaxiEntity;
@@ -33,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.company.components.Components.*;
-import static com.company.group.GroupServiceImpl.GROUP_IDS;
 
 
 @Service
@@ -47,6 +47,7 @@ public class TaxiServiceImpl implements TaxiService {
     private final AttachService attachService;
     private final ClientService clientService;
     private final UserRepository userRepository;
+    private final GroupCircularImpl groupCircularImpl;
 
     @Value("${from}")
     private String FROM;
@@ -186,11 +187,13 @@ public class TaxiServiceImpl implements TaxiService {
 
     private void sendAds(TaxiEntity taxi, Message message) {
 
-        GROUP_IDS.forEach(groupId -> {
+        groupCircularImpl
+                .getAll()
+                .forEach(group -> {
 
             SendPhoto sendPhoto = attachService.getSendPhoto(taxi.getChatId());
 
-            sendPhoto.setChatId(groupId);
+            sendPhoto.setChatId(group.getGroupId());
             sendPhoto.setCaption(String.valueOf(message.getText()));
             sendPhoto.setProtectContent(true);
             sendPhoto.setReplyMarkup(getAds());
@@ -209,11 +212,11 @@ public class TaxiServiceImpl implements TaxiService {
         rows.add(row);
 
         //TODO
-//        row = new ArrayList<>();
+        row = new ArrayList<>();
 //        row.add(taxi);
-//        rows.add(row);
-//        markup.setKeyboard(rows);
-
+        rows.add(row);
+        markup.setKeyboard(rows);
+//
         return markup;
     }
 
@@ -328,13 +331,13 @@ public class TaxiServiceImpl implements TaxiService {
         List<KeyboardRow> rows = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
 
-//        row.add(Components.GIVE_ADD);
-        row.add(PROFILE_INFO);
+        row.add(Components.GIVE_ADD);
         row.add(Components.MAIN_MENU);
 
         rows.add(row);
         row = new KeyboardRow();
 
+        row.add(PROFILE_INFO);
         row.add(Components.CONNECT_ADMIN);
         rows.add(row);
 

@@ -38,6 +38,7 @@ public interface Components {
 
     //GROUP
     String GROUP_ADS = "ZAKASLAR FAQAT BOT ORQALI QABUL QILINADI!!! \n\n Shafyor e'lonlari faqat bot orqali beriladi!";
+    String GROUP_ADS2 = "Xabaringiz Operatorga Yuborildi ✅\n Agar 30 sekund ichida javob kelmasa Tez va Ishonchli Botimiz orqali Taksist Chaqiring \uD83D\uDC47\uD83C\uDFFB";
     String GROUP_LINK = "\uD83D\uDE96 TAKSI CHAQIRISH \uD83D\uDE96";
     String GROUP_TAXI = "\uD83D\uDE96 TAKSI SIFATIDA ISHLASH \uD83D\uDE96";
     String SELECT_ = "SELECT_";
@@ -113,17 +114,19 @@ public interface Components {
     String ONLY_UZB = "\uD83E\uDD37\uD83C\uDFFB\u200D♂\uFE0F Bot faqat O'zbekiston hududidagi shaxslarga xizmat ko'rsatadi!";
     String NUMBER_NOT_YOURS = "Bu raqam egasi siz emassiz! \uD83E\uDEE4";
 
-    String ONE_TWO = "Navoiydan Toshkentga";
-    String TWO_ONE = "Toshkentdan Navoiyga";
+    String ONE_TWO = "Namangandan Toshkentga";
+    String TWO_ONE = "Toshkentdan Namanganga";
     String TIME = "\uD83D\uDD54 Muddat: ";
     String WILL_ORDER = "Zakas olmochi:";
     String IS_AGREE = "Agarda kelisha olmasangiz guruhga klient raqami tashalishi so'raladi❗\uFE0F";
     String PL_INPUT = "Assalomu aleykum! Botimizdan foydalanish uchun so'ralgan malumotlarni to'ldirishingiz talab etiladi \uD83D\uDE42";
-    String GIVE_ADD = "\uD83D\uDCCC Elon berish";
-    String TAXI_ADS_EXAMPLE = "Assalomu aleykum\n Namangandan Toshkentga\n soat 02:00da yuramiz\n 2kishi srochni kerak!";
-    String TAXI_ADS = "E'loningizni quyidagicha to'ldiring!";
+    String GIVE_ADD = "\uD83D\uDCCC E'LON BERISH";
+    String TAXI_ADS_EXAMPLE = "Assalomu aleykum\n Namangandan Toshkentga\n soat 02:00da yuramiz\n 2kishi srochni kerak!\n...";
+    String TAXI_ADS = "E'loningizni quyidagiga o'xshab to'ldirishingiz mumkin!";
     String BOT_ADS = "\uD83D\uDE96 Zakas Berish \uD83D\uDE96";
     String BE_TAXI = "\uD83D\uDE96 Taksi sifatida ishlash \uD83D\uDE96";
-    String ATTENTION_ALL_TAXIST = "SHAFYORLAR DIQQATIGA❗\uFE0F";
-    String ATTENTION_TAXIST = "❗\uFE0F Elon berish faqat bot orqali amalga oshiriladi!";
+    String ATTENTION_ALL_TAXIST = "SHAFYORLAR DIQQATIGA❗\uFE0F - E'lonlarni Bot Orqali Bering❗\uFE0F\n YO'LOVCHILAR DIQQATIGA❗\uFE0F - Barcha Turdagi Zakaslar Faqat Bot Orqali Qabul Qilinadi❗\uFE0F";
+    String ATTENTION_TAXIST = "❗\uFE0F E'LON BERISH faqat bot orqali amalga oshiriladi!";
+
+    String CALL_BOT = "\uD83D\uDE96 E'LON BERISH \uD83D\uDE96";
 }
