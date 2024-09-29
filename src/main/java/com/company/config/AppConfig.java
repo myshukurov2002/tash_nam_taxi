@@ -56,7 +56,7 @@ public class AppConfig {
         }
     }
 
-    @Scheduled(fixedRate = 3 * 60 * 60 * 1000) // 5 hours in milliseconds
+    @Scheduled(fixedRate = 24 * 2 * 60 * 60 * 1000) // 5 hours in milliseconds
     public void sendMessage() {
         groupService.getAll().forEach(group -> {
            SendPhoto sendPhoto = SendPhoto.builder()
