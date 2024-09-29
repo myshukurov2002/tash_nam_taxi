@@ -103,4 +103,6 @@ public interface SenderService {
     void editMessageMarkdown(Long id, Integer messageId, String caption, InlineKeyboardMarkup markup);
 
     void replyMessage(Long chatId, Integer messageId, String text, InlineKeyboardMarkup inlineButtonForGroup);
+
+    InlineKeyboardButton getInlineUrlButton(String botAds, String botUrl);
 }

@@ -408,6 +408,14 @@ public class SenderServiceImpl implements SenderService {
         sendMessage(sendMessage);
     }
 
+    @Override
+    public InlineKeyboardButton getInlineUrlButton(String text, String url) {
+        return InlineKeyboardButton.builder()
+                .text(text)
+                .url(url)
+                .build();
+    }
+
     public void askUserType(Long chatId, String askUserType) {
 
         SendMessage sendMessage = getSendMessage(chatId, askUserType);
@@ -468,12 +476,12 @@ public class SenderServiceImpl implements SenderService {
         List<KeyboardRow> rows = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
 
-        row.add(Components.GIVE_ADD);
+//        row.add(Components.GIVE_ADD);
+        row.add(PROFILE_INFO);
         row.add(Components.MAIN_MENU);
         rows.add(row);
         row = new KeyboardRow();
 //  TODO
-        row.add(PROFILE_INFO);
         row.add(Components.CONNECT_ADMIN);
         rows.add(row);
 

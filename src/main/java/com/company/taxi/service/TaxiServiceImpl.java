@@ -206,8 +206,8 @@ public class TaxiServiceImpl implements TaxiService {
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row = new ArrayList<>();
-        InlineKeyboardButton client = senderService.getInlineButton(Components.BOT_ADS, BOT_URL);
-        InlineKeyboardButton taxi = senderService.getInlineButton(BE_TAXI, BOT_URL);
+        InlineKeyboardButton client = senderService.getInlineUrlButton(Components.BOT_ADS, BOT_URL);
+//        InlineKeyboardButton taxi = senderService.getInlineButton(BE_TAXI, BOT_URL);
         row.add(client);
         rows.add(row);
 
@@ -331,13 +331,13 @@ public class TaxiServiceImpl implements TaxiService {
         List<KeyboardRow> rows = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
 
-        row.add(Components.GIVE_ADD);
+//        row.add(Components.GIVE_ADD);
+        row.add(PROFILE_INFO);
         row.add(Components.MAIN_MENU);
 
         rows.add(row);
         row = new KeyboardRow();
 
-        row.add(PROFILE_INFO);
         row.add(Components.CONNECT_ADMIN);
         rows.add(row);
 
