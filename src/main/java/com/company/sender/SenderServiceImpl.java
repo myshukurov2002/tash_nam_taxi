@@ -354,14 +354,14 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
-    public void sendToTaxiGroup(Long chatId, String data, VoyageEntity voyage) {
+    public Message sendToTaxiGroup(Long chatId, String data, VoyageEntity voyage) {
         SendMessage sendMessage = getSendMessage(chatId, data);
         InlineKeyboardMarkup markup = getInlineKeyboardMarkup(ILL_GET, ILL_GET + "\n" + voyage.getId());
         sendMessage.setParseMode("html");
         sendMessage.enableHtml(true);
         sendMessage.setProtectContent(true);
         sendMessage.setReplyMarkup(markup);
-        sendMessage(sendMessage);
+        return sendMessage(sendMessage);
     }
 
     @Override

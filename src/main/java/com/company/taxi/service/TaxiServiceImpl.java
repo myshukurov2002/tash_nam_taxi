@@ -302,7 +302,10 @@ public class TaxiServiceImpl implements TaxiService {
                 .getData()
                 .split("\n");
         String temp = data[0] + "\n" + data[1] + "\n\n" + Components.WILL_ORDER;
-        senderService.sendToTaxiGroup(Long.valueOf(TAXI_GROUP_ID), temp, voyage);
+        Message message = senderService.
+                            sendToTaxiGroup(Long.valueOf(TAXI_GROUP_ID), temp, voyage);
+
+        senderService.pinMessage(message.getChatId(), message.getMessageId());
 //        List<TaxiEntity> taxistsByVoyage = getTaxistsByVoyage(voyage);
 //        for (TaxiEntity taxi : taxistsByVoyage) {
 //            senderService.sendMainMenuAndGetExecuted(taxi.getChatId(), voyage.getAbout());

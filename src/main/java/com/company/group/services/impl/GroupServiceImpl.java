@@ -139,6 +139,13 @@ public class GroupServiceImpl implements GroupService {
             String[] texts = message.getText()
                     .split("\n");
 //            String nameTaxi = "[" + userById.getFullName() + "](tg://user?id=" + chatId + ")";
+            Chat chat = message.getChat();
+            String firstName = chat.getFirstName();
+            String userName = chat.getUserName();
+            userById.setFullName(firstName);
+            userById.setUsername(userName);
+            authService.save(userById);
+
             String nameTaxi = userById.getFullName();
 
             if (text.contains(nameTaxi) /*||

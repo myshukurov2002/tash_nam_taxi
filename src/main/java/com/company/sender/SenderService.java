@@ -88,7 +88,7 @@ public interface SenderService {
 
     void initCommands(SetMyCommands setMyCommands);
 
-    void sendToTaxiGroup(Long chatId, String data, VoyageEntity voyage);
+    Message sendToTaxiGroup(Long chatId, String data, VoyageEntity voyage);
 
     void execute(BanChatMember banChatMember);
 

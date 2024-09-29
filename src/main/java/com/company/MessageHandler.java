@@ -90,6 +90,13 @@ public class MessageHandler {
                 getMenu(user, message, chatId);
             }
             case "/help": {
+                Chat chat = message.getChat();
+                String firstName = chat.getFirstName();
+                String userName = chat.getUserName();
+                user.setFullName(firstName);
+                user.setUsername(userName);
+                user.setUserState(UserState.USER_TYPE);
+                authService.save(user);
                 senderService.sendMessage(chatId, Components.HELP);
                 senderService.sendMessage(chatId, Components.HELP_2, senderService.getGroupUrl());
             }
