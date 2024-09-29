@@ -125,6 +125,9 @@ public class TaxiServiceImpl implements TaxiService {
 
                     case CONNECT_ADMIN -> senderService.sendMessage(chatId, HELP, getMenu());
                     case GIVE_ADD -> {
+                        if (true) {
+                            return;
+                        }
                         senderService.sendMessage(chatId, Components.TAXI_ADS + "\n\n\n" + Components.TAXI_ADS_EXAMPLE);
                         taxi.setTaxiState(TaxiState.GIVE_ADD);
                         save(taxi);
