@@ -119,6 +119,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void handleCallBackQuery(Long chatId, CallbackQuery callbackQuery) {
 
+        System.out.println(callbackQuery.getData());
         Message message = callbackQuery.getMessage();
         Chat group = message.getChat();
 

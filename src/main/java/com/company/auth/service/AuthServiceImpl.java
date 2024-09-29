@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.List;
@@ -107,6 +108,10 @@ public class AuthServiceImpl implements AuthService {
                         clientService.handleMessage(user, message);
                     }
                     default -> {
+                        Chat chat = message.getChat();
+                        String firstName = chat.getFirstName();
+                        user.setFullName(firstName);
+                        user.setUsername(userName);
                         user.setUserState(UserState.USER_TYPE);
                         userRepository.save(user);
 
