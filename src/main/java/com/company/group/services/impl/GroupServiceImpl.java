@@ -20,14 +20,13 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.GetMe;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatAdministrators;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -209,6 +208,38 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<GroupEntity> getAll() {
         return groupCircular.getAll();
+    }
+
+    @Override
+    public void giveAdToGroups1() {
+        getAll().forEach(group -> {
+            SendPhoto sendPhoto = SendPhoto.builder()
+                    .chatId(group.getGroupId())
+                    .protectContent(true)
+                    .caption(Components.ATTENTION_ALL_TAXIST_1)
+                    .photo(new InputFile(new File(Components.BOT_IMG_PATH)))
+                    .replyMarkup(getInlineButtonForGroup())
+                    .build();
+            Message message = senderService.sendPhoto(sendPhoto);
+            Integer messageId = message.getMessageId();
+            senderService.pinMessage(group.getGroupId(), messageId);
+        });
+    }
+
+    @Override
+    public void giveAdToGroups2() {
+        getAll().forEach(group -> {
+            SendPhoto sendPhoto = SendPhoto.builder()
+                    .chatId(group.getGroupId())
+                    .protectContent(true)
+                    .caption(Components.ATTENTION_ALL_TAXIST_2)
+                    .photo(new InputFile(new File(Components.BOT_IMG_PATH)))
+                    .replyMarkup(getInlineButtonForGroup())
+                    .build();
+            Message message = senderService.sendPhoto(sendPhoto);
+            Integer messageId = message.getMessageId();
+            senderService.pinMessage(group.getGroupId(), messageId);
+        });
     }
 
     private boolean isUserAdmin(long chatId, long userId) {

@@ -56,20 +56,9 @@ public class AppConfig {
         }
     }
 
-    @Scheduled(fixedRate = 24 * 2 * 60 * 60 * 1000) // 5 hours in milliseconds
+    @Scheduled(fixedRate = 24 * 1 * 60 * 60 * 1000) // 5 hours in milliseconds
     public void sendMessage() {
-        groupService.getAll().forEach(group -> {
-           SendPhoto sendPhoto = SendPhoto.builder()
-                   .chatId(group.getGroupId())
-                   .protectContent(true)
-                   .caption(Components.ATTENTION_ALL_TAXIST)
-                   .photo(new InputFile(new File(Components.BOT_IMG_PATH)))
-                   .replyMarkup(groupService.getInlineButtonForGroup())
-                   .build();
-           Message message = senderService.sendPhoto(sendPhoto);
-           Integer messageId = message.getMessageId();
-           senderService.pinMessage(group.getGroupId(), messageId);
-       });
+        groupService.giveAdToGroups1();
     }
 
 }

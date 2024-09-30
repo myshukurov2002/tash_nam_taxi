@@ -7,6 +7,8 @@ import com.company.auth.components.UserState;
 import com.company.auth.service.AuthService;
 import com.company.client.service.ClientService;
 import com.company.components.Components;
+import com.company.group.services.GroupService;
+import com.company.group.services.impl.GroupServiceImpl;
 import com.company.sender.SenderService;
 import com.company.taxi.components.TaxiEntity;
 import com.company.taxi.service.TaxiService;
@@ -49,7 +51,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Value("${admin.name}")
     private String ADMIN_NAME;
-//    @Value("${admin.phone}")
+    //    @Value("${admin.phone}")
 //    private String ADMIN_PHONE;
     @Value("${admin.id}")
     private Long ADMIN_ID;
@@ -58,6 +60,7 @@ public class AdminServiceImpl implements AdminService {
     private final SenderService senderService;
     private final TaxiService taxiService;
     private final ClientService clientService;
+    private final GroupService groupService;
     private BotController botController;
 
     @Value("${admin.username}")
@@ -122,6 +125,9 @@ public class AdminServiceImpl implements AdminService {
                 case AdminComponents.RUN -> {
                     run(text.substring(5));
                 }
+                case AdminComponents.ADS -> {
+                        adToGroup(words[1]);
+                }
                 default -> {
                     senderService.sendMessage(adminId, AdminComponents.COMMANDS);
                 }
@@ -130,6 +136,14 @@ public class AdminServiceImpl implements AdminService {
             e.printStackTrace();
             log.error(e.getMessage());
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
+        }
+    }
+
+    private void adToGroup(String key) {
+        if (key.equals("1")) {
+            groupService.giveAdToGroups1();
+        } else {
+            groupService.giveAdToGroups2();
         }
     }
 

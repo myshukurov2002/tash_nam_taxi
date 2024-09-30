@@ -15,4 +15,7 @@ public interface GroupService {
     InlineKeyboardMarkup getInlineButtonForGroup();
 
     List<GroupEntity> getAll();
+
+    void giveAdToGroups1();
+    void giveAdToGroups2();
 }

@@ -125,8 +125,8 @@ public interface Components {
     String TAXI_ADS = "E'loningizni quyidagiga o'xshab to'ldirishingiz mumkin!";
     String BOT_ADS = "\uD83D\uDE96 Zakas Berish \uD83D\uDE96";
     String BE_TAXI = "\uD83D\uDE96 Taksi sifatida ishlash \uD83D\uDE96";
-//    String ATTENTION_ALL_TAXIST = "SHAFYORLAR DIQQATIGA❗\uFE0F - E'lonlarni Bot Orqali Bering❗\uFE0F\n YO'LOVCHILAR DIQQATIGA❗\uFE0F - Barcha Turdagi Zakaslar Faqat Bot Orqali Qabul Qilinadi❗\uFE0F";
-    String ATTENTION_ALL_TAXIST = "\uFE0F\n YO'LOVCHILAR DIQQATIGA❗\uFE0F - Barcha Turdagi Zakaslar Faqat Bot Orqali Qabul Qilinadi❗\uFE0F";
+    String ATTENTION_ALL_TAXIST_1 = "SHAFYORLAR DIQQATIGA❗\uFE0F - E'lonlarni Bot Orqali Bering❗\uFE0F\n YO'LOVCHILAR DIQQATIGA❗\uFE0F - Barcha Turdagi Zakaslar Faqat Bot Orqali Qabul Qilinadi❗\uFE0F";
+    String ATTENTION_ALL_TAXIST_2 = "\uFE0F\n YO'LOVCHILAR DIQQATIGA❗\uFE0F - Barcha Turdagi Zakaslar Faqat Bot Orqali Qabul Qilinadi❗\uFE0F";
     String ATTENTION_TAXIST = "❗\uFE0F E'LON BERISH faqat bot orqali amalga oshiriladi!";
 
     String CALL_BOT = "\uD83D\uDE96 E'LON BERISH \uD83D\uDE96";
