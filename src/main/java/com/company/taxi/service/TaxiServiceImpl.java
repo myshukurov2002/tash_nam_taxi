@@ -253,6 +253,12 @@ public class TaxiServiceImpl implements TaxiService {
                 .findAll();
     }
 
+    @Override
+    public int count() {
+        return taxiRepository
+                .countAllByVisibilityTrue();
+    }
+
 
     @Override
     public void handleCallbackQuery(UserEntity user, CallbackQuery callbackQuery) {

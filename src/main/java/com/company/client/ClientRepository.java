@@ -10,4 +10,6 @@ public interface ClientRepository extends JpaRepository<ClientEntity, Long> {
     Optional<ClientEntity> findByChatIdAndVisibilityTrue(Long chatId);
 
     List<ClientEntity> findAllByVisibilityTrue();
+
+    int countAllByVisibilityTrue();
 }

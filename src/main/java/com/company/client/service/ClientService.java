@@ -21,4 +21,8 @@ public interface ClientService {
     List<ClientEntity> getAll();
 
     List<VoyageEntity> getAllVoyages();
+
+    int count();
+
+    int countVoyages();
 }

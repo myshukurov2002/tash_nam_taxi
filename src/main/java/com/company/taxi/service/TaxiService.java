@@ -31,4 +31,6 @@ public interface TaxiService {
     boolean existsById(Long chatId);
 
     List<TaxiEntity> getAll();
+
+    int count();
 }

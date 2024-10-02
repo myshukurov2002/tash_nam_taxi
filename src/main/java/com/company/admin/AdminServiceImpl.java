@@ -153,15 +153,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void getStatistics(Long adminId) {
-        List<UserEntity> users = authService.getAll();
-        List<ClientEntity> clients = clientService.getAll();
-        List<TaxiEntity> taxists = taxiService.getAll();
-        List<VoyageEntity> allVoyages = clientService.getAllVoyages();
+        int users = authService.count();
+        int clients = clientService.count();
+        int taxists = taxiService.count();
+        int allVoyages = clientService.countVoyages();
         StringBuilder builder = new StringBuilder()
-                .append("Users: " + users.size())
-                .append("Clients: " + clients.size())
-                .append("Taxists: " + taxists.size())
-                .append("Voyages: " + allVoyages.size());
+                .append("Users: " + users)
+                .append("Clients: " + clients)
+                .append("Taxists: " + taxists)
+                .append("Voyages: " + allVoyages);
 
         senderService.sendMessage(adminId, builder.toString());
     }

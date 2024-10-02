@@ -276,6 +276,18 @@ public class ClientServiceImpl implements ClientService {
                 .findAll();
     }
 
+    @Override
+    public int count() {
+        return clientRepository
+                .countAllByVisibilityTrue();
+    }
+
+    @Override
+    public int countVoyages() {
+        return voyageRepository
+                .countAllByVisibilityTrue();
+    }
+
     private VoyageEntity getVoyage(Long chatId, String queryId, Integer messageId, UserEntity user) {
         return voyageRepository
                 .findFirstByClientIdAndVisibilityTrueOrderByCreatedDateDesc(chatId)

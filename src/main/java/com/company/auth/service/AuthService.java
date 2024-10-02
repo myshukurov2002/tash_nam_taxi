@@ -23,4 +23,6 @@ public interface AuthService {
     void deleteByChatId(Long chatId);
 
     void create(Long userId, String role);
+
+    int count();
 }

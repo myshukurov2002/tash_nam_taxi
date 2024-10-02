@@ -11,4 +11,5 @@ public interface TaxiRepository extends JpaRepository<TaxiEntity, Long> {
 
     List<TaxiEntity> findAllByStatusTrue();
 
+    int countAllByVisibilityTrue();
 }

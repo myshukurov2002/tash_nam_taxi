@@ -162,6 +162,12 @@ public class AuthServiceImpl implements AuthService {
         save(userById);
     }
 
+    @Override
+    public int count() {
+        return userRepository
+                .countAllByVisibilityTrue();
+    }
+
     public UserEntity getUserById(Long chatId) {
 
         return userRepository
