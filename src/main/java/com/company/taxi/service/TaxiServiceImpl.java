@@ -69,7 +69,6 @@ public class TaxiServiceImpl implements TaxiService {
         Long chatId = user.getChatId();
         TaxiEntity taxi = getById(chatId);
         TaxiState taxiState = taxi.getTaxiState();
-        String text = message.getText();
         Integer messageId = message.getMessageId();
 
         switch (taxiState) {
@@ -108,6 +107,7 @@ public class TaxiServiceImpl implements TaxiService {
                 );
             }
             case TAXI_REGISTRATION_DONE -> {
+                String text = message.getText();
 
                 switch (text) {
 
@@ -164,6 +164,8 @@ public class TaxiServiceImpl implements TaxiService {
             }
 
             default -> {
+                String text = message.getText();
+
                 if (text.equals(TAXIST)) {
                     if (taxi.getTaxiState().equals(TaxiState.TAXI_REGISTRATION_DONE)) {
                         user.setUserRole(UserRole.TAXIST);

@@ -75,6 +75,10 @@ public class MessageHandler {
         }
     }
 
+    public void handleVoyage(VoyageEntity voyage, Integer messageId) {
+        taxiService.sendVoyage(voyage, messageId);
+    }
+
     private void commandService(UserEntity user, Message message) {
         Long chatId = user.getChatId();
         String command = message.getText();
@@ -116,8 +120,4 @@ public class MessageHandler {
         }
     }
 
-
-    public void handleVoyage(VoyageEntity voyage, Integer messageId) {
-        taxiService.sendVoyage(voyage, messageId);
-    }
 }
