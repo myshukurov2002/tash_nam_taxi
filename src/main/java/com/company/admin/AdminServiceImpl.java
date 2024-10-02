@@ -5,8 +5,6 @@ import com.company.auth.components.UserEntity;
 import com.company.auth.components.UserRole;
 import com.company.auth.components.UserState;
 import com.company.auth.service.AuthService;
-import com.company.client.components.ClientEntity;
-import com.company.client.components.VoyageEntity;
 import com.company.client.service.ClientService;
 import com.company.components.Components;
 import com.company.group.services.GroupService;
@@ -141,6 +139,7 @@ public class AdminServiceImpl implements AdminService {
                 case AdminComponents.STATISTICS -> {
                     getStatistics(adminId);
                 }
+
                 default -> {
                     senderService.sendMessage(adminId, AdminComponents.COMMANDS);
                 }
@@ -153,17 +152,13 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void getStatistics(Long adminId) {
-        int users = authService.count();
-        int clients = clientService.count();
-        int taxists = taxiService.count();
-        int allVoyages = clientService.countVoyages();
-        StringBuilder builder = new StringBuilder()
-                .append("Users: " + users)
-                .append("Clients: " + clients)
-                .append("Taxists: " + taxists)
-                .append("Voyages: " + allVoyages);
 
-        senderService.sendMessage(adminId, builder.toString());
+        String builder = "\n" + "Users: " + authService.count() +
+                "\n" + "Clients: " + clientService.count() +
+                "\n" + "Taxists: " + taxiService.count() +
+                "\n" + "Voyages: " + clientService.countVoyages();
+
+        senderService.sendMessage(adminId, builder);
     }
 
     @Transactional
@@ -231,7 +226,6 @@ public class AdminServiceImpl implements AdminService {
 
         senderService.sendLongMessage(chatId, builder.toString());
     }
-
 
     private void adToGroup(String key) {
         if (key.equals("1")) {

@@ -420,7 +420,7 @@ public class SenderServiceImpl implements SenderService {
     public void sendLongMessage(Long chatId, String text) {
         final int CHUNK_SIZE = 4096;
         int textLength = text.length();
-
+        System.out.println("textLength = " + textLength);
         for (int i = 0; i < textLength; i += CHUNK_SIZE) {
             String chunk = text.substring(i, Math.min(textLength, i + CHUNK_SIZE));
             sendMessage(chatId, "<code>" + chunk + "</code>");

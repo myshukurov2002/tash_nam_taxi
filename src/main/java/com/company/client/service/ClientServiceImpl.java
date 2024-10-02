@@ -134,6 +134,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public void handleCallbackQuery(UserEntity user, CallbackQuery callbackQuery) {
+
         String userName = callbackQuery.getFrom().getUserName();
         String queryId = callbackQuery.getId();
         Integer messageId = callbackQuery.getMessage().getMessageId();
@@ -251,17 +252,14 @@ public class ClientServiceImpl implements ClientService {
 
         StringBuilder builder = new StringBuilder();
         all.stream()
-                .map(voyage -> {
-                    builder.append("ID: ").append(voyage.getId()).append("\n")
-                            .append("Client ID: ").append(voyage.getClientId()).append("\n")
-                            .append("Voyage State: ").append(voyage.getVoyageState()).append("\n")
-                            .append("From/To: ").append(voyage.getFromTo()).append("\n")
-                            .append("Voyage Type: ").append(voyage.getVoyageType()).append("\n")
-                            .append("Data: ").append(voyage.getData()).append("\n\n");
-
-                    return voyage;
-                })
+                .peek(voyage -> builder.append("ID: ").append(voyage.getId()).append("\n")
+                        .append("Client ID: ").append(voyage.getClientId()).append("\n")
+                        .append("Voyage State: ").append(voyage.getVoyageState()).append("\n")
+                        .append("From/To: ").append(voyage.getFromTo()).append("\n")
+                        .append("Voyage Type: ").append(voyage.getVoyageType()).append("\n")
+                        .append("Data: ").append(voyage.getData()).append("\n\n"))
                 .toList();
+        System.out.println("voyages");
         senderService.sendLongMessage(chatId, builder.toString());
     }
 
@@ -283,9 +281,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public int countVoyages() {
+    public long countVoyages() {
         return voyageRepository
-                .countAllByVisibilityTrue();
+                .count();
     }
 
     private VoyageEntity getVoyage(Long chatId, String queryId, Integer messageId, UserEntity user) {
@@ -328,6 +326,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     private InlineKeyboardMarkup getIsCorrect() {
+
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row = new ArrayList<>();
         InlineKeyboardButton yes = senderService.getInlineButton(YES, YES);

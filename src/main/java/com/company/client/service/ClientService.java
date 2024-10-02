@@ -24,5 +24,5 @@ public interface ClientService {
 
     int count();
 
-    int countVoyages();
+    long countVoyages();
 }
