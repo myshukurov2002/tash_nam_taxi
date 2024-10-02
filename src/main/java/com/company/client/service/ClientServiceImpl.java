@@ -259,7 +259,6 @@ public class ClientServiceImpl implements ClientService {
                         .append("Voyage Type: ").append(voyage.getVoyageType()).append("\n")
                         .append("Data: ").append(voyage.getData()).append("\n\n"))
                 .toList();
-        System.out.println("voyages");
         senderService.sendLongMessage(chatId, builder.toString());
     }
 
