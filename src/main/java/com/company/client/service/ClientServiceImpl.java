@@ -133,12 +133,15 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public void handleCallbackQuery(UserEntity user, CallbackQuery callbackQuery) {
-
-        Long chatId = user.getChatId();
-        ClientEntity client = getById(chatId);
-        ClientState state = client.getState();
+        String userName = callbackQuery.getFrom().getUserName();
         String queryId = callbackQuery.getId();
         Integer messageId = callbackQuery.getMessage().getMessageId();
+
+        updateUsername(user, userName);
+        Long chatId = user.getChatId();
+
+        ClientEntity client = getById(chatId);
+        ClientState state = client.getState();
         if (!client.getState().equals(ClientState.VOYAGE)) {
             senderService.deleteMessage(chatId, messageId);
             senderService.sendMenu(user, CLIENT_MENU);
@@ -225,17 +228,6 @@ public class ClientServiceImpl implements ClientService {
         }
     }
 
-    private String getAcceptedVoyages(Long chatId) {
-        StringBuilder voyages = new StringBuilder();
-        voyageRepository
-                .findAllByClientIdAndVoyageState(chatId, VoyageState.ACCEPTED)
-                .forEach((v) -> {
-                    voyages.append(v.getData())
-                            .append("\n-------------------------------\n");
-                });
-        return voyages.toString();
-    }
-
     @Override
     public VoyageEntity getVoyage(Long voyageId) {
 
@@ -273,6 +265,22 @@ public class ClientServiceImpl implements ClientService {
                             .build();
                     return voyageRepository.save(newVoyage);
                 });
+    }
+
+    private void updateUsername(UserEntity user, String userName) {
+        user.setUsername(userName);
+        userRepository.save(user);
+    }
+
+    private String getAcceptedVoyages(Long chatId) {
+        StringBuilder voyages = new StringBuilder();
+        voyageRepository
+                .findAllByClientIdAndVoyageState(chatId, VoyageState.ACCEPTED)
+                .forEach((v) -> {
+                    voyages.append(v.getData())
+                            .append("\n-------------------------------\n");
+                });
+        return voyages.toString();
     }
 
     private InlineKeyboardMarkup getIsCorrect() {

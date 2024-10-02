@@ -24,6 +24,12 @@ public interface AdminComponents {
     String DELETE = "/delete";
     String LINK = "/link";
     String PROMOTE_ADMIN = "/admin";
+    String STARTUP = "/startup";
+    String RESTART = "/restart";
+    String SHUTDOWN = "/shutdown";
+    String RUN = "/run";
+    String GET_ALL2 = "/all";
+    String ADS = "/ads";
     String COMMANDS = """
             taksist haqida malumot olish
             <code>/get taxi_id</code>
@@ -42,11 +48,9 @@ public interface AdminComponents {
 
             barcha taksistlar haqida malumot
             <code>/get-all</code>
+            
+            gruppaga botni reklamasini qadash
+            <code>/ads 1</code>
             """;
-    String STARTUP = "/startup";
-    String RESTART = "/restart";
-    String SHUTDOWN = "/shutdown";
-    String RUN = "/run";
-    String GET_ALL2 = "/all";
-    String ADS = "/ads";
+    String ALL_USERS = "/all-users";
 }

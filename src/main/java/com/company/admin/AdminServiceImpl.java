@@ -8,7 +8,6 @@ import com.company.auth.service.AuthService;
 import com.company.client.service.ClientService;
 import com.company.components.Components;
 import com.company.group.services.GroupService;
-import com.company.group.services.impl.GroupServiceImpl;
 import com.company.sender.SenderService;
 import com.company.taxi.components.TaxiEntity;
 import com.company.taxi.service.TaxiService;
@@ -126,7 +125,10 @@ public class AdminServiceImpl implements AdminService {
                     run(text.substring(5));
                 }
                 case AdminComponents.ADS -> {
-                        adToGroup(words[1]);
+                    adToGroup(words[1]);
+                }
+                case AdminComponents.ALL_USERS -> {
+                    getAllUsers(admin.getChatId());
                 }
                 default -> {
                     senderService.sendMessage(adminId, AdminComponents.COMMANDS);
@@ -138,6 +140,23 @@ public class AdminServiceImpl implements AdminService {
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
         }
     }
+
+    private void getAllUsers(Long chatId) {
+        List<String> users = authService.getAll()
+                .stream()
+                .map(u -> u.getFullName() + " " + u.getPhone() + "\n")
+                .toList();
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("count: ").append(users.size()).append("\n");
+
+        for (String user : users) {
+            builder.append(user);
+        }
+
+        senderService.sendMessage(chatId, "```" + builder.toString() + "```");
+    }
+
 
     private void adToGroup(String key) {
         if (key.equals("1")) {
@@ -161,7 +180,7 @@ public class AdminServiceImpl implements AdminService {
                             .append("\nRole: " + u.getUserRole())
                             .append("\n-------------------------");
                 });
-        senderService.sendMessage(adminId, builder.toString());
+        senderService.sendMessage(adminId, "```" + builder.toString() + "```");
     }
 
     private void run(String userCommand) {
@@ -255,7 +274,7 @@ public class AdminServiceImpl implements AdminService {
                             .append("\nMuddat: " + t.getDuration())
                             .append("\n-------------------------");
                 });
-        senderService.sendMessage(adminId, builder.toString());
+        senderService.sendMessage(adminId, "```" + builder.toString() + "```");
     }
 
     @Override
