@@ -133,6 +133,9 @@ public class AdminServiceImpl implements AdminService {
                 case AdminComponents.ALL_TAXI -> {
                     getAllTaxi(admin.getChatId());
                 }
+                case AdminComponents.VOYAGES -> {
+                    getAllVoyages(adminId);
+                }
                 default -> {
                     senderService.sendMessage(adminId, AdminComponents.COMMANDS);
                 }
@@ -142,6 +145,28 @@ public class AdminServiceImpl implements AdminService {
             log.error(e.getMessage());
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
         }
+    }
+
+    @Transactional
+    void delete(Long chatId) {
+        TaxiEntity taxi = taxiService.getById(chatId);
+
+        try {
+            unban(TAXI_GROUP_ID, chatId);
+            taxiService.deleteByChatId(taxi);
+            clientService.deleteByChatId(chatId);
+            authService.deleteByChatId(chatId);
+            senderService.sendMessage(ADMIN_ID, "deleted ID: " + chatId);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            senderService.sendMessage(ADMIN_ID, "<code>" + e.getMessage() + "</code>");
+        }
+
+
+    }
+
+    private void getAllVoyages(Long adminId) {
+        clientService.getAllVoyages(adminId);
     }
 
     private void getAllTaxi(Long chatId) {
@@ -171,7 +196,7 @@ public class AdminServiceImpl implements AdminService {
         List<UserEntity> users = authService.getAll();
 
         if (users == null || users.isEmpty()) {
-            senderService.sendLongMessage(chatId, "```No users found.```");
+            senderService.sendLongMessage(chatId, "</code>No users found.</code>");
             return;
         }
 
@@ -187,7 +212,6 @@ public class AdminServiceImpl implements AdminService {
 
         senderService.sendLongMessage(chatId, builder.toString());
     }
-
 
 
     private void adToGroup(String key) {
@@ -273,24 +297,6 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    @Transactional
-    void delete(Long chatId) {
-        TaxiEntity taxi = taxiService.getById(chatId);
-
-        try {
-            unban(TAXI_GROUP_ID, chatId);
-            taxiService.deleteByChatId(taxi);
-            clientService.deleteByChatId(chatId);
-            authService.deleteByChatId(chatId);
-            senderService.sendMessage(ADMIN_ID, "deleted ID: " + chatId);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            senderService.sendMessage(ADMIN_ID, "<code>" + e.getMessage() + "</code>");
-        }
-
-
-    }
-
     private void getAll(Long adminId) {
         StringBuilder builder = new StringBuilder();
 
@@ -328,7 +334,7 @@ public class AdminServiceImpl implements AdminService {
                     case Components.APPROVE -> {
                         taxi.setStatus(true);
                         taxi.setDuration(taxi.getDuration() + DURATION);
-                        taxiService.updateStatus(taxi);
+                        taxiService.update(taxi);
                         senderService.answerInlineButton(callbackQuery.getId(), APPROVE);
 //                        senderService.sendMessage(taxiId, Components.APPROVED + taxi.getFromTo());
                         senderService.sendMenu(userById, Components.APPROVED + taxi.getFromTo() + "\n" + Components.AFTER_APPROVE);
@@ -426,6 +432,35 @@ public class AdminServiceImpl implements AdminService {
         senderService.execute(deleteMyCommands);
     }
 
+    @Override
+    public void banTaxi(Long taxiId) {
+
+        TaxiEntity taxi = taxiService.getById(taxiId);
+        taxi.ban();
+        taxiService.save(taxi);
+
+        BanChatMember banChatMember = new BanChatMember();
+        banChatMember.setChatId(TAXI_GROUP_ID);
+        banChatMember.setUserId(taxiId);
+
+        senderService.execute(banChatMember);
+        senderService.sendMessage(TAXI_GROUP_ID, "Taxi ID: " + taxiId + " banned.");
+        senderService.sendMessage(taxiId, AdminComponents.YOUR_BANNED + ADMIN_USERNAME);
+    }
+
+    @Transactional
+    public void unbanTaxi(Long taxiId) {
+        unban(TAXI_GROUP_ID, taxiId);
+        senderService.sendMessage(taxiId, AdminComponents.UNBANNED);
+
+        TaxiEntity taxi = taxiService.getById(taxiId);
+        taxi.setStatus(true);
+        taxi.setDuration(DURATION);
+        taxiService.save(taxi);
+
+        senderService.sendMessage(taxiId, AdminComponents.ENTER_THE_GROUP + getInviteLink());
+    }
+
     private void send(String text) {
         text.replace("/send", " ");
         authService
@@ -473,19 +508,6 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    @Transactional
-    public void unbanTaxi(Long taxiId) {
-        unban(TAXI_GROUP_ID, taxiId);
-        senderService.sendMessage(taxiId, AdminComponents.UNBANNED);
-
-        TaxiEntity taxi = taxiService.getById(taxiId);
-        taxi.setStatus(true);
-        taxi.setDuration(DURATION);
-        taxiService.save(taxi);
-
-        senderService.sendMessage(taxiId, AdminComponents.ENTER_THE_GROUP + getInviteLink());
-    }
-
     private void unban(Long taxiGroupId, Long taxiId) {
         UnbanChatMember unbanChatMember = new UnbanChatMember();
         unbanChatMember.setChatId(taxiGroupId); // The ID of the group
@@ -507,21 +529,5 @@ public class AdminServiceImpl implements AdminService {
         return senderService
                 .execute(createInviteLink)
                 .getInviteLink();
-    }
-
-    @Override
-    public void banTaxi(Long taxiId) {
-
-        TaxiEntity taxi = taxiService.getById(taxiId);
-        taxi.ban();
-        taxiService.save(taxi);
-
-        BanChatMember banChatMember = new BanChatMember();
-        banChatMember.setChatId(TAXI_GROUP_ID);
-        banChatMember.setUserId(taxiId);
-
-        senderService.execute(banChatMember);
-        senderService.sendMessage(TAXI_GROUP_ID, "Taxi ID: " + taxiId + " banned.");
-        senderService.sendMessage(taxiId, AdminComponents.YOUR_BANNED + ADMIN_USERNAME);
     }
 }

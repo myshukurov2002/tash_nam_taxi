@@ -58,7 +58,8 @@ public class AppConfig {
 
     @Scheduled(fixedRate = 24 * 1 * 60 * 60 * 1000) // 5 hours in milliseconds
     public void sendMessage() {
-        groupService.giveAdToGroups1();
+        //TODO
+//        groupService.giveAdToGroups1();
     }
 
 }

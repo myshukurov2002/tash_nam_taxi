@@ -240,9 +240,29 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public void deleteByChatId(Long chatId) {
-            voyageRepository
-                    .deleteAllByClientId(chatId);
-            clientRepository.deleteById(chatId);
+        voyageRepository
+                .deleteAllByClientId(chatId);
+        clientRepository.deleteById(chatId);
+    }
+
+    @Override
+    public void getAllVoyages(Long chatId) {
+        List<VoyageEntity> all = voyageRepository.findAll();
+
+        StringBuilder builder = new StringBuilder();
+        all.stream()
+                .map(voyage -> {
+                    builder.append("ID: ").append(voyage.getId()).append("\n")
+                            .append("Client ID: ").append(voyage.getClientId()).append("\n")
+                            .append("Voyage State: ").append(voyage.getVoyageState()).append("\n")
+                            .append("From/To: ").append(voyage.getFromTo()).append("\n")
+                            .append("Voyage Type: ").append(voyage.getVoyageType()).append("\n")
+                            .append("Data: ").append(voyage.getData()).append("\n\n");
+
+                    return voyage;
+                })
+                .toList();
+        senderService.sendLongMessage(chatId, builder.toString());
     }
 
     private VoyageEntity getVoyage(Long chatId, String queryId, Integer messageId, UserEntity user) {

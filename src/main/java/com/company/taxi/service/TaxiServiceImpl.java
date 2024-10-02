@@ -291,7 +291,7 @@ public class TaxiServiceImpl implements TaxiService {
 
     @SneakyThrows
     @Override
-    public void updateStatus(TaxiEntity taxi) {
+    public void update(TaxiEntity taxi) {
         taxiRepository.save(taxi);
     }
 

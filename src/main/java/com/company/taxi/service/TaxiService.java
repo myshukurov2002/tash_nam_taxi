@@ -16,7 +16,7 @@ public interface TaxiService {
 
     TaxiEntity getById(Long taxiId);
 
-    void updateStatus(TaxiEntity taxi);
+    void update(TaxiEntity taxi);
 
     void deleteByChatId(TaxiEntity taxi);
 

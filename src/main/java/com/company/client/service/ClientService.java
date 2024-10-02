@@ -12,4 +12,6 @@ public interface ClientService {
     VoyageEntity getVoyage(Long voyageId);
 
     void deleteByChatId(Long chatId);
+
+    void getAllVoyages(Long chatId);
 }
