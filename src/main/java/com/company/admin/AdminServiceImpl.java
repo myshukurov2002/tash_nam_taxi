@@ -154,7 +154,7 @@ public class AdminServiceImpl implements AdminService {
             builder.append(user);
         }
 
-        senderService.sendMessage(chatId, "```" + builder.toString() + "```");
+        senderService.sendLongMessage(chatId, "```" + builder.toString() + "```");
     }
 
 

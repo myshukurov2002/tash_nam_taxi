@@ -105,4 +105,6 @@ public interface SenderService {
     void replyMessage(Long chatId, Integer messageId, String text, InlineKeyboardMarkup inlineButtonForGroup);
 
     InlineKeyboardButton getInlineUrlButton(String botAds, String botUrl);
+
+    void sendLongMessage(Long chatId, String s);
 }

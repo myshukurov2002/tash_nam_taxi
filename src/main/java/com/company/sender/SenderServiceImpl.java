@@ -416,6 +416,17 @@ public class SenderServiceImpl implements SenderService {
                 .build();
     }
 
+    @Override
+    public void sendLongMessage(Long chatId, String text) {
+        final int CHUNK_SIZE = 4096;
+        int textLength = text.length();
+
+        for (int i = 0; i < textLength; i += CHUNK_SIZE) {
+            String chunk = text.substring(i, Math.min(textLength, i + CHUNK_SIZE));
+            sendMessage(chatId, chunk);
+        }
+    }
+
     public void askUserType(Long chatId, String askUserType) {
 
         SendMessage sendMessage = getSendMessage(chatId, askUserType);
