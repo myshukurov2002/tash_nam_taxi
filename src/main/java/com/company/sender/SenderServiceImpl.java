@@ -423,7 +423,7 @@ public class SenderServiceImpl implements SenderService {
            int textLength = text.length();
            for (int i = 0; i < textLength; i += CHUNK_SIZE) {
                String chunk = text.substring(i, Math.min(textLength, i + CHUNK_SIZE));
-               sendMessage(chatId, "<code>" + chunk + "</code>");
+               sendMessageWithoutHtml(chatId, chunk);
            }
        } catch (Exception e) {
            sendLongMessage(chatId, e.getMessage());
@@ -522,5 +522,14 @@ public class SenderServiceImpl implements SenderService {
                 .parseMode("HTML")
                 .messageId(messageId)
                 .build();
+    }
+
+    @SneakyThrows
+    private Message sendMessageWithoutHtml(Long chatId, String chunk) {
+        SendMessage sendMessage = SendMessage.builder()
+                .chatId(chatId)
+                .replyMarkup(new ReplyKeyboardRemove(true))
+                .text(chunk).build();
+       return botController.execute(sendMessage);
     }
 }
