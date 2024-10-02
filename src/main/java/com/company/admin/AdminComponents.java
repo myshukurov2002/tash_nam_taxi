@@ -55,4 +55,5 @@ public interface AdminComponents {
     String ALL_USERS = "/all-users";
     String ALL_TAXI = "/all-taxi";
     String VOYAGES = "/voyages";
+    String STATISTICS = "/statistics";
 }

@@ -5,6 +5,8 @@ import com.company.auth.components.UserEntity;
 import com.company.auth.components.UserRole;
 import com.company.auth.components.UserState;
 import com.company.auth.service.AuthService;
+import com.company.client.components.ClientEntity;
+import com.company.client.components.VoyageEntity;
 import com.company.client.service.ClientService;
 import com.company.components.Components;
 import com.company.group.services.GroupService;
@@ -136,6 +138,9 @@ public class AdminServiceImpl implements AdminService {
                 case AdminComponents.VOYAGES -> {
                     getAllVoyages(adminId);
                 }
+                case AdminComponents.STATISTICS -> {
+                    getStatistics(adminId);
+                }
                 default -> {
                     senderService.sendMessage(adminId, AdminComponents.COMMANDS);
                 }
@@ -145,6 +150,20 @@ public class AdminServiceImpl implements AdminService {
             log.error(e.getMessage());
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
         }
+    }
+
+    private void getStatistics(Long adminId) {
+        List<UserEntity> users = authService.getAll();
+        List<ClientEntity> clients = clientService.getAll();
+        List<TaxiEntity> taxists = taxiService.getAll();
+        List<VoyageEntity> allVoyages = clientService.getAllVoyages();
+        StringBuilder builder = new StringBuilder()
+                .append("Users: " + users.size())
+                .append("Clients: " + clients.size())
+                .append("Taxists: " + taxists.size())
+                .append("Voyages: " + allVoyages.size());
+
+        senderService.sendMessage(adminId, builder.toString());
     }
 
     @Transactional

@@ -265,6 +265,17 @@ public class ClientServiceImpl implements ClientService {
         senderService.sendLongMessage(chatId, builder.toString());
     }
 
+    @Override
+    public List<ClientEntity> getAll() {
+        return clientRepository.findAllByVisibilityTrue();
+    }
+
+    @Override
+    public List<VoyageEntity> getAllVoyages() {
+        return voyageRepository
+                .findAll();
+    }
+
     private VoyageEntity getVoyage(Long chatId, String queryId, Integer messageId, UserEntity user) {
         return voyageRepository
                 .findFirstByClientIdAndVisibilityTrueOrderByCreatedDateDesc(chatId)
