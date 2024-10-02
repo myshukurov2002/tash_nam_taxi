@@ -130,6 +130,9 @@ public class AdminServiceImpl implements AdminService {
                 case AdminComponents.ALL_USERS -> {
                     getAllUsers(admin.getChatId());
                 }
+                case AdminComponents.ALL_TAXI -> {
+                    getAllTaxi(admin.getChatId());
+                }
                 default -> {
                     senderService.sendMessage(adminId, AdminComponents.COMMANDS);
                 }
@@ -141,21 +144,50 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    private void getAllUsers(Long chatId) {
-        List<String> users = authService.getAll()
-                .stream()
-                .map(u -> u.getFullName() + " " + u.getPhone() + "\n")
-                .toList();
+    private void getAllTaxi(Long chatId) {
 
-        StringBuilder builder = new StringBuilder();
-        builder.append("count: ").append(users.size()).append("\n");
+        List<TaxiEntity> taxists = taxiService.getAll();
 
-        for (String user : users) {
-            builder.append(user);
+        if (taxists == null || taxists.isEmpty()) {
+            senderService.sendLongMessage(chatId, "```No taxists found.```");
+            return;
         }
 
-        senderService.sendLongMessage(chatId, "```" + builder.toString() + "```");
+        StringBuilder builder = new StringBuilder();
+        builder.append("Count: ").append(taxists.size()).append("\n");
+
+        taxists.forEach(taxi -> builder
+                .append(taxi.getChatId())
+                .append(" ")
+                .append(taxi.getDuration())
+                .append("\n")
+        );
+
+        senderService.sendLongMessage(chatId, builder.toString());
     }
+
+    private void getAllUsers(Long chatId) {
+
+        List<UserEntity> users = authService.getAll();
+
+        if (users == null || users.isEmpty()) {
+            senderService.sendLongMessage(chatId, "```No users found.```");
+            return;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("Count: ").append(users.size()).append("\n");
+
+        users.forEach(user -> builder
+                .append(user.getFullName())
+                .append(" ")
+                .append(user.getPhone())
+                .append("\n")
+        );
+
+        senderService.sendLongMessage(chatId, builder.toString());
+    }
+
 
 
     private void adToGroup(String key) {

@@ -245,6 +245,12 @@ public class TaxiServiceImpl implements TaxiService {
                 .existsById(chatId);
     }
 
+    @Override
+    public List<TaxiEntity> getAll() {
+        return taxiRepository
+                .findAll();
+    }
+
 
     @Override
     public void handleCallbackQuery(UserEntity user, CallbackQuery callbackQuery) {

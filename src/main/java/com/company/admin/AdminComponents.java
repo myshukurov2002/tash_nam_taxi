@@ -53,4 +53,5 @@ public interface AdminComponents {
             <code>/ads 1</code>
             """;
     String ALL_USERS = "/all-users";
+    String ALL_TAXI = "/all-taxi";
 }

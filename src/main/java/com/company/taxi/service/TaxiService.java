@@ -29,4 +29,6 @@ public interface TaxiService {
     void getInfo(TaxiEntity taxi, Long chatId);
 
     boolean existsById(Long chatId);
+
+    List<TaxiEntity> getAll();
 }

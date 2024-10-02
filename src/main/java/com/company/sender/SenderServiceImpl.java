@@ -423,7 +423,7 @@ public class SenderServiceImpl implements SenderService {
 
         for (int i = 0; i < textLength; i += CHUNK_SIZE) {
             String chunk = text.substring(i, Math.min(textLength, i + CHUNK_SIZE));
-            sendMessage(chatId, chunk);
+            sendMessage(chatId, "```" + chunk + "```");
         }
     }
 

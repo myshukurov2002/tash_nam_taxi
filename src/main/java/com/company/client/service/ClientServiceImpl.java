@@ -105,7 +105,8 @@ public class ClientServiceImpl implements ClientService {
                         clientRepository.save(client);
 
                         senderService.deleteMessage(chatId, messageId - 1);
-                        senderService.sendMenu(user, voyages);
+                        senderService.sendLongMessage(chatId, voyages);
+                        senderService.sendMenu(user, CLIENT_MENU);
                     }
                     case CONNECT_ADMIN -> {
                         senderService.sendMenu(user, HELP);
