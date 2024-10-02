@@ -160,25 +160,28 @@ public class ClientServiceImpl implements ClientService {
             }
             case A_ONE, A_TWO, A_THREE, A_FOUR, A_POSTAGE -> {
 
-                StringBuilder voyageBuilder = new StringBuilder()
-                        .append("\uD83D\uDCCD " + voyage.getFromTo())
-                        .append("\n")
-                        .append(data)
-                        .append("\n")
-                        .append(FULL_NAME)
-                        .append("<a href = \"")
-                        .append(TELEGRAM_LINK + "@").append(user.getUsername()).append("\">").append(user.getFullName())
-                        .append("</a>")
-                        .append("\n")
-                        .append(PHONE).append(user.getPhone())
-                        .append("\n").append(Components.IS_CORRECT);
+                String voyageBuilder = "\uD83D\uDCCD " + voyage.getFromTo() +
+                        "\n" +
+                        data +
+                        "\n" +
+                        FULL_NAME +
+                        "<a href=\"https://t.me/" +
+                        user.getUsername() +
+                        "\">" +
+                        user.getFullName() +
+                        "</a>" +
+                        "\n" +
+                        PHONE +
+                        user.getPhone() +
+                        "\n" +
+                        Components.IS_CORRECT;
 
-                String caption = voyageBuilder.toString();
+
                 voyage.setVoyageType(data);
-                voyage.setData(caption);
+                voyage.setData(voyageBuilder);
                 voyageRepository.save(voyage);
 
-                senderService.editMessage(chatId, messageId, caption, getIsCorrect());
+                senderService.editMessage(chatId, messageId, voyageBuilder, getIsCorrect());
             }
             case YES, NO -> {
 
