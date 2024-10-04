@@ -353,6 +353,7 @@ public class AdminServiceImpl implements AdminService {
                     .getUserByPhone(userPhone);//TODO
             userByPhone.setUserState(UserState.BANNED);
             authService.save(userByPhone);
+            senderService.sendMessage(adminId, "banned");
 
         } catch (Exception e) {
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
@@ -365,6 +366,7 @@ public class AdminServiceImpl implements AdminService {
                     .getUserByPhone(phone);//TODO
             userByPhone.setUserState(UserState.USER_TYPE);
             authService.save(userByPhone);
+            senderService.sendMessage(adminId, "unbanned");
 
         } catch (Exception e) {
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
