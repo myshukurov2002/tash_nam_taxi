@@ -524,7 +524,7 @@ public class SenderServiceImpl implements SenderService {
                 .build();
     }
 
-     @SneakyThrows
+    @SneakyThrows
     private Message sendMessageWithoutHtml(Long chatId, String chunk) {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
