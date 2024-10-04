@@ -25,4 +25,8 @@ public interface AuthService {
     void create(Long userId, String role);
 
     int count();
+
+    UserEntity getUserByPhone(String userPhone);
+
+    int execute(String sql);
 }

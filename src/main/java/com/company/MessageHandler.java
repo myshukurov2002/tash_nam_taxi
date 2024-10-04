@@ -36,6 +36,11 @@ public class MessageHandler {
         UserEntity user = authService.getUserById(chatId, firstName);
         UserRole userRole = user.getUserRole();
 
+        if (user.getUserState().equals(UserState.BANNED)) {
+            senderService.sendMessage(chatId, "¯\u2060\\\u2060_\u2060(\u2060ツ\u2060)\u2060_\u2060/\u2060¯");
+            return;
+        }
+
         if (message.getFrom().getUserName() != null &&
             user.getUsername() == null) {
             user.setUsername(message.getFrom().getUserName());

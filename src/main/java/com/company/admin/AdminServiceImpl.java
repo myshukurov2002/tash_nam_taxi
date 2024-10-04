@@ -7,6 +7,7 @@ import com.company.auth.components.UserState;
 import com.company.auth.service.AuthService;
 import com.company.client.service.ClientService;
 import com.company.components.Components;
+import com.company.expections.exp.AppBadRequestException;
 import com.company.group.services.GroupService;
 import com.company.sender.SenderService;
 import com.company.taxi.components.TaxiEntity;
@@ -84,8 +85,15 @@ public class AdminServiceImpl implements AdminService {
         System.out.println(adminId);
         try {
             switch (words[0]) {
+                case AdminComponents.EXECUTE -> {
+                    int effectedRows = executeBDCommand(adminId, text.substring(9));
+                }
                 case AdminComponents.BAN -> {
                     banTaxi(Long.valueOf(words[1]));
+                    senderService.sendMessage(adminId, SUCCESS);
+                }
+                case AdminComponents.BAN_USER -> {
+                    banUser(adminId, words[1]);
                     senderService.sendMessage(adminId, SUCCESS);
                 }
                 case AdminComponents.UNBAN -> {
@@ -139,7 +147,6 @@ public class AdminServiceImpl implements AdminService {
                 case AdminComponents.STATISTICS -> {
                     getStatistics(adminId);
                 }
-
                 default -> {
                     senderService.sendMessage(adminId, AdminComponents.COMMANDS);
                 }
@@ -151,14 +158,147 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    private void getStatistics(Long adminId) {
+    private int executeBDCommand(Long adminId, String sql) {
+        try {
+            return authService
+                    .execute(sql);
+        } catch (Exception e) {
+            senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
+            throw new AppBadRequestException(e.getMessage());
+        }
+    }
 
-        String builder = "\n" + "Users: " + authService.count() +
-                "\n" + "Clients: " + clientService.count() +
-                "\n" + "Taxists: " + taxiService.count() +
-                "\n" + "Voyages: " + clientService.countVoyages();
+    @Override
+    @Transactional
+    public void handleCallBackQuery(UserEntity user, CallbackQuery callbackQuery) {
 
-        senderService.sendMessage(adminId, builder);
+        String data = callbackQuery.getData();
+        String[] dataArr = data.split(" ");
+        String isApprove = dataArr[0];
+        Long taxiId = Long.valueOf(dataArr[1]);
+
+        TaxiEntity taxi = taxiService
+                .getById(taxiId);
+        UserEntity userById = authService.getUserById(taxiId);
+
+        switch (user.getUserRole()) {
+            case ADMIN, SUPER_ADMIN -> {
+                switch (isApprove) {
+                    case Components.APPROVE -> {
+                        taxi.setStatus(true);
+                        taxi.setDuration(taxi.getDuration() + DURATION);
+                        taxiService.update(taxi);
+                        senderService.answerInlineButton(callbackQuery.getId(), APPROVE);
+//                        senderService.sendMessage(taxiId, Components.APPROVED + taxi.getFromTo());
+                        senderService.sendMenu(userById, Components.APPROVED + taxi.getFromTo() + "\n" + Components.AFTER_APPROVE);
+                        senderService.sendMenu(userById, AdminComponents.JOIN_GROUP + getInviteLink());
+                    }
+                    case Components.DISAPPROVE -> {
+
+                        userById.setUserRole(UserRole.SOUL);
+                        userById.setUserState(UserState.USER_TYPE);
+                        authService.save(userById);
+
+                        taxiService.deleteByChatId(taxi);
+                        senderService.askUserType(taxiId, Components.DISAPPROVED);
+
+                        senderService.answerInlineButton(callbackQuery.getId(), DISAPPROVE);
+                    }
+                }
+            }
+        }
+        Message message = callbackQuery.getMessage();
+
+        PhotoSize photo = message.getPhoto()
+                .stream()
+                .max(Comparator.comparingInt(PhotoSize::getFileSize))
+                .orElseThrow();
+        String fileId = photo.getFileId();
+
+        String caption = message.getCaption();
+        caption += "\n\n" + isApprove;
+
+        SendPhoto sendPhoto = SendPhoto
+                .builder()
+                .chatId(ADMIN_ID)
+                .photo(new InputFile(fileId))
+                .caption(caption)
+                .build();
+
+//        senderService.sendPhoto(sendPhoto);
+        senderService.editMessageWithMedia(message.getMessageId(), sendPhoto, caption);
+        senderService.editMessageCaption(user.getChatId(), message.getMessageId(), caption);
+//        senderService.deleteMessage(user.getChatId(), callbackQuery.getMessage().getMessageId());
+    }
+
+    @Override
+    @PostConstruct
+    public void init() {
+        try {
+            UserEntity superAdmin = UserEntity.builder()
+                    .chatId(SUPER_ADMIN_ID)
+                    .userRole(UserRole.ADMIN)
+                    .phone("+998902812345")
+                    .userState(UserState.REGISTRATION_DONE)
+                    .fullName("Muhammad Yusuf")
+                    .build();
+            superAdmin.setCreatedDate(LocalDateTime.now());
+
+            authService.save(superAdmin);//TODO
+
+            UserEntity admin = UserEntity.builder()
+                    .chatId(ADMIN_ID)
+                    .userRole(UserRole.ADMIN)
+//                    .phone(ADMIN_PHONE)
+                    .userState(UserState.REGISTRATION_DONE)
+                    .fullName(ADMIN_NAME)
+                    .build();
+            admin.setCreatedDate(LocalDateTime.now());
+
+            authService.save(admin);
+            System.out.println("running ..");
+            senderService.sendMessage(SUPER_ADMIN_ID, "running ..");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @PostConstruct
+    public void initCommands() {
+        List<BotCommand> commands = new ArrayList<>();
+        commands.add(new BotCommand("/help", "Yordam"));
+        commands.add(new BotCommand("/menu", "Bosh Menu"));
+
+        SetMyCommands setMyCommands = new SetMyCommands();
+        setMyCommands.setCommands(commands);
+        senderService.initCommands(setMyCommands);
+
+    }
+
+    @PostConstruct
+    public void removeCommandsFromAllGroups() {
+        DeleteMyCommands deleteMyCommands = new DeleteMyCommands();
+        BotCommandScopeAllGroupChats scopeAllGroups = new BotCommandScopeAllGroupChats();
+        deleteMyCommands.setScope(scopeAllGroups);
+        senderService.execute(deleteMyCommands);
+    }
+
+    @Override
+    public void banTaxi(Long taxiId) {
+
+        TaxiEntity taxi = taxiService.getById(taxiId);
+        taxi.ban();
+        taxiService.save(taxi);
+
+        BanChatMember banChatMember = new BanChatMember();
+        banChatMember.setChatId(TAXI_GROUP_ID);
+        banChatMember.setUserId(taxiId);
+
+        senderService.execute(banChatMember);
+        senderService.sendMessage(TAXI_GROUP_ID, "Taxi ID: " + taxiId + " banned.");
+        senderService.sendMessage(taxiId, AdminComponents.YOUR_BANNED + ADMIN_USERNAME);
     }
 
     @Transactional
@@ -177,6 +317,42 @@ public class AdminServiceImpl implements AdminService {
         }
 
 
+    }
+
+    @Transactional
+    public void unbanTaxi(Long taxiId) {
+        unban(TAXI_GROUP_ID, taxiId);
+        senderService.sendMessage(taxiId, AdminComponents.UNBANNED);
+
+        TaxiEntity taxi = taxiService.getById(taxiId);
+        taxi.setStatus(true);
+        taxi.setDuration(DURATION);
+        taxiService.save(taxi);
+
+        senderService.sendMessage(taxiId, AdminComponents.ENTER_THE_GROUP + getInviteLink());
+    }
+
+    private void getStatistics(Long adminId) {
+
+        String builder = "\n" + "Users: " + authService.count() +
+                "\n" + "Clients: " + clientService.count() +
+                "\n" + "Taxists: " + taxiService.count() +
+                "\n" + "Voyages: " + clientService.countVoyages();
+
+        senderService.sendMessage(adminId, builder);
+    }
+
+    private void banUser(Long adminId, String userPhone) {
+
+        try {
+            UserEntity userByPhone = authService
+                    .getUserByPhone(userPhone);//TODO
+            userByPhone.setUserState(UserState.BANNED);
+            authService.save(userByPhone);
+
+        } catch (Exception e) {
+            senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
+        }
     }
 
     private void getAllVoyages(Long adminId) {
@@ -326,152 +502,6 @@ public class AdminServiceImpl implements AdminService {
                             .append("\n-------------------------");
                 });
         senderService.sendMessage(adminId, "```" + builder.toString() + "```");
-    }
-
-    @Override
-    @Transactional
-    public void handleCallBackQuery(UserEntity user, CallbackQuery callbackQuery) {
-
-        String data = callbackQuery.getData();
-        String[] dataArr = data.split(" ");
-        String isApprove = dataArr[0];
-        Long taxiId = Long.valueOf(dataArr[1]);
-
-        TaxiEntity taxi = taxiService
-                .getById(taxiId);
-        UserEntity userById = authService.getUserById(taxiId);
-
-        switch (user.getUserRole()) {
-            case ADMIN, SUPER_ADMIN -> {
-                switch (isApprove) {
-                    case Components.APPROVE -> {
-                        taxi.setStatus(true);
-                        taxi.setDuration(taxi.getDuration() + DURATION);
-                        taxiService.update(taxi);
-                        senderService.answerInlineButton(callbackQuery.getId(), APPROVE);
-//                        senderService.sendMessage(taxiId, Components.APPROVED + taxi.getFromTo());
-                        senderService.sendMenu(userById, Components.APPROVED + taxi.getFromTo() + "\n" + Components.AFTER_APPROVE);
-                        senderService.sendMenu(userById, AdminComponents.JOIN_GROUP + getInviteLink());
-                    }
-                    case Components.DISAPPROVE -> {
-
-                        userById.setUserRole(UserRole.SOUL);
-                        userById.setUserState(UserState.USER_TYPE);
-                        authService.save(userById);
-
-                        taxiService.deleteByChatId(taxi);
-                        senderService.askUserType(taxiId, Components.DISAPPROVED);
-
-                        senderService.answerInlineButton(callbackQuery.getId(), DISAPPROVE);
-                    }
-                }
-            }
-        }
-        Message message = callbackQuery.getMessage();
-
-        PhotoSize photo = message.getPhoto()
-                .stream()
-                .max(Comparator.comparingInt(PhotoSize::getFileSize))
-                .orElseThrow();
-        String fileId = photo.getFileId();
-
-        String caption = message.getCaption();
-        caption += "\n\n" + isApprove;
-
-        SendPhoto sendPhoto = SendPhoto
-                .builder()
-                .chatId(ADMIN_ID)
-                .photo(new InputFile(fileId))
-                .caption(caption)
-                .build();
-
-//        senderService.sendPhoto(sendPhoto);
-        senderService.editMessageWithMedia(message.getMessageId(), sendPhoto, caption);
-        senderService.editMessageCaption(user.getChatId(), message.getMessageId(), caption);
-//        senderService.deleteMessage(user.getChatId(), callbackQuery.getMessage().getMessageId());
-    }
-
-    @Override
-    @PostConstruct
-    public void init() {
-        try {
-            UserEntity superAdmin = UserEntity.builder()
-                    .chatId(SUPER_ADMIN_ID)
-                    .userRole(UserRole.ADMIN)
-                    .phone("+998902812345")
-                    .userState(UserState.REGISTRATION_DONE)
-                    .fullName("Muhammad Yusuf")
-                    .build();
-            superAdmin.setCreatedDate(LocalDateTime.now());
-
-            authService.save(superAdmin);//TODO
-
-            UserEntity admin = UserEntity.builder()
-                    .chatId(ADMIN_ID)
-                    .userRole(UserRole.ADMIN)
-//                    .phone(ADMIN_PHONE)
-                    .userState(UserState.REGISTRATION_DONE)
-                    .fullName(ADMIN_NAME)
-                    .build();
-            admin.setCreatedDate(LocalDateTime.now());
-
-            authService.save(admin);
-            System.out.println("running ..");
-            senderService.sendMessage(SUPER_ADMIN_ID, "running ..");
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    @PostConstruct
-    public void initCommands() {
-        List<BotCommand> commands = new ArrayList<>();
-        commands.add(new BotCommand("/help", "Yordam"));
-        commands.add(new BotCommand("/menu", "Bosh Menu"));
-
-        SetMyCommands setMyCommands = new SetMyCommands();
-        setMyCommands.setCommands(commands);
-        senderService.initCommands(setMyCommands);
-
-    }
-
-    @PostConstruct
-    public void removeCommandsFromAllGroups() {
-        DeleteMyCommands deleteMyCommands = new DeleteMyCommands();
-        BotCommandScopeAllGroupChats scopeAllGroups = new BotCommandScopeAllGroupChats();
-        deleteMyCommands.setScope(scopeAllGroups);
-        senderService.execute(deleteMyCommands);
-    }
-
-    @Override
-    public void banTaxi(Long taxiId) {
-
-        TaxiEntity taxi = taxiService.getById(taxiId);
-        taxi.ban();
-        taxiService.save(taxi);
-
-        BanChatMember banChatMember = new BanChatMember();
-        banChatMember.setChatId(TAXI_GROUP_ID);
-        banChatMember.setUserId(taxiId);
-
-        senderService.execute(banChatMember);
-        senderService.sendMessage(TAXI_GROUP_ID, "Taxi ID: " + taxiId + " banned.");
-        senderService.sendMessage(taxiId, AdminComponents.YOUR_BANNED + ADMIN_USERNAME);
-    }
-
-    @Transactional
-    public void unbanTaxi(Long taxiId) {
-        unban(TAXI_GROUP_ID, taxiId);
-        senderService.sendMessage(taxiId, AdminComponents.UNBANNED);
-
-        TaxiEntity taxi = taxiService.getById(taxiId);
-        taxi.setStatus(true);
-        taxi.setDuration(DURATION);
-        taxiService.save(taxi);
-
-        senderService.sendMessage(taxiId, AdminComponents.ENTER_THE_GROUP + getInviteLink());
     }
 
     private void send(String text) {

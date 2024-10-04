@@ -56,4 +56,6 @@ public interface AdminComponents {
     String ALL_TAXI = "/all-taxi";
     String VOYAGES = "/voyages";
     String STATISTICS = "/statistics";
+    String BAN_USER = "/ban-user";
+    String EXECUTE = "/execute";
 }

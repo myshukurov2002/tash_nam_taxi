@@ -6,8 +6,11 @@ import com.company.auth.components.UserRole;
 import com.company.auth.components.UserState;
 import com.company.client.service.ClientService;
 import com.company.components.Components;
+import com.company.expections.exp.ItemNotFoundException;
 import com.company.sender.SenderService;
 import com.company.taxi.service.TaxiService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +32,9 @@ public class AuthServiceImpl implements AuthService {
     private final SenderService senderService;
     private final TaxiService taxiService;
     private final ClientService clientService;
+
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Value("${admin.id}")
     private Long ADMIN_ID;
@@ -166,6 +172,21 @@ public class AuthServiceImpl implements AuthService {
     public int count() {
         return userRepository
                 .countAllByVisibilityTrue();
+    }
+
+    @Override
+    public UserEntity getUserByPhone(String userPhone) {
+        return userRepository
+                .findByPhone(userPhone)
+                .orElseThrow(ItemNotFoundException::new);
+    }
+
+    @Override
+    public int execute(String sql) {
+
+        return entityManager
+                .createNamedQuery(sql)
+                .executeUpdate();
     }
 
     public UserEntity getUserById(Long chatId) {

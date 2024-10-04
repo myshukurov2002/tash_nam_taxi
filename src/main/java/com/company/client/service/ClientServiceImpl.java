@@ -172,7 +172,7 @@ public class ClientServiceImpl implements ClientService {
                         "</a>" +
                         "\n" +
                         PHONE +
-                        user.getPhone() +
+                         '+' + user.getPhone() +
                         "\n" +
                         Components.IS_CORRECT;
 
