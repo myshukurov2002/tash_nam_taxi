@@ -185,7 +185,7 @@ public class AuthServiceImpl implements AuthService {
     public int execute(String sql) {
 
         return entityManager
-                .createNamedQuery(sql)
+                .createNativeQuery(sql)
                 .executeUpdate();
     }
 

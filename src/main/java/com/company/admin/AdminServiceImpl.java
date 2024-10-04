@@ -86,7 +86,7 @@ public class AdminServiceImpl implements AdminService {
         try {
             switch (words[0]) {
                 case AdminComponents.EXECUTE -> {
-                    int effectedRows = executeBDCommand(adminId, text.substring(9));
+                    executeBDCommand(adminId, text.substring(9));
                 }
                 case AdminComponents.BAN -> {
                     banTaxi(Long.valueOf(words[1]));
@@ -172,13 +172,13 @@ public class AdminServiceImpl implements AdminService {
         senderService.sendMessage(adminId, String.valueOf(user));
     }
 
-    private int executeBDCommand(Long adminId, String sql) {
+    private void executeBDCommand(Long adminId, String sql) {
         try {
-            return authService
+            int executed = authService
                     .execute(sql);
+            senderService.sendMessage(adminId, "<code>" + executed + "</code>");
         } catch (Exception e) {
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
-            throw new AppBadRequestException(e.getMessage());
         }
     }
 
