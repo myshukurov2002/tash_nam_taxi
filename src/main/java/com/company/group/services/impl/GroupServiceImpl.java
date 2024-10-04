@@ -155,6 +155,7 @@ public class GroupServiceImpl implements GroupService {
 
             if (texts.length <= 5) {
                 senderService.editMessageMarkdown(group.getId(), message.getMessageId(), caption, markup);
+                senderService.sendMenu(userTaxi, voyage.getData());
             } else {
                 caption += "\n\n" + Components.IS_AGREE;
                 senderService.editMessage(group.getId(), message.getMessageId(), caption);
