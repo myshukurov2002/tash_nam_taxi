@@ -96,6 +96,10 @@ public class AdminServiceImpl implements AdminService {
                     banUser(adminId, words[1]);
                     senderService.sendMessage(adminId, SUCCESS);
                 }
+                case AdminComponents.UNBAN_USER -> {
+                    unbanUser(adminId, words[1]);
+                    senderService.sendMessage(adminId, SUCCESS);
+                }
                 case AdminComponents.UNBAN -> {
                     unbanTaxi(Long.valueOf(words[1]));
                     senderService.sendMessage(adminId, SUCCESS);
@@ -348,6 +352,18 @@ public class AdminServiceImpl implements AdminService {
             UserEntity userByPhone = authService
                     .getUserByPhone(userPhone);//TODO
             userByPhone.setUserState(UserState.BANNED);
+            authService.save(userByPhone);
+
+        } catch (Exception e) {
+            senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
+        }
+    }
+
+    private void unbanUser(Long adminId, String phone) {
+        try {
+            UserEntity userByPhone = authService
+                    .getUserByPhone(phone);//TODO
+            userByPhone.setUserState(UserState.USER_TYPE);
             authService.save(userByPhone);
 
         } catch (Exception e) {
