@@ -2,7 +2,9 @@ package com.company.base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @MappedSuperclass
+@ToString
 public abstract class BaseEntity implements Serializable {
 
     @Column

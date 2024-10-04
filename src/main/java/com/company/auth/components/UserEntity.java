@@ -11,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
+@ToString
 public class UserEntity extends BaseEntity {
     @Id
     private Long chatId;
