@@ -6,7 +6,6 @@ import com.company.auth.components.UserEntity;
 import com.company.auth.components.UserRole;
 import com.company.auth.components.UserState;
 import com.company.client.components.VoyageEntity;
-import com.company.client.service.ClientService;
 import com.company.components.Components;
 import com.company.expections.exp.AppBadRequestException;
 import com.company.group.services.impl.GroupCircularImpl;
@@ -45,7 +44,6 @@ public class TaxiServiceImpl implements TaxiService {
 
     private final SenderService senderService;
     private final AttachService attachService;
-    private final ClientService clientService;
     private final UserRepository userRepository;
     private final GroupCircularImpl groupCircularImpl;
 
@@ -112,7 +110,6 @@ public class TaxiServiceImpl implements TaxiService {
                 switch (text) {
 
                     case PROFILE_INFO -> {
-
                         getInfo(taxi, taxi.getChatId());
                     }
                     case MAIN_MENU, "/menu" -> {
@@ -263,14 +260,14 @@ public class TaxiServiceImpl implements TaxiService {
     @Override
     public void handleCallbackQuery(UserEntity user, CallbackQuery callbackQuery) {
 
-        TaxiEntity taxi = getById(user.getChatId());
-        Long chatId = user.getChatId();
-
-        TaxiState taxiState = taxi.getTaxiState();
-        String data = callbackQuery.getData();
-        Integer messageId = callbackQuery.getMessage().getMessageId();
-
-        senderService.sendMenu(user, TAXI_MENU);
+//        TaxiEntity taxi = getById(user.getChatId());
+//        Long chatId = user.getChatId();
+//
+//        TaxiState taxiState = taxi.getTaxiState();
+//        String data = callbackQuery.getData();
+//        Integer messageId = callbackQuery.getMessage().getMessageId();
+//
+//        senderService.sendMenu(user, TAXI_MENU);
     }
 
     public void sendRequestToAdmin(SendPhoto taxiInfo) {
@@ -320,17 +317,11 @@ public class TaxiServiceImpl implements TaxiService {
                 .split("\n");
         String temp = data[0] + "\n" + data[1] + "\n\n" + Components.WILL_ORDER;
 
-                Message message = senderService.
-                            sendMessage(Long.valueOf(TAXI_GROUP_ID), voyage.getData());
+//                Message message = senderService.
+//                            sendMessage(Long.valueOf(TAXI_GROUP_ID), voyage.getData());
+        Message message = senderService.
+                            sendToTaxiGroup(Long.valueOf(TAXI_GROUP_ID), temp, voyage);
         senderService.pinMessage(message.getChatId(), message.getMessageId());
-//        Message message = senderService.
-//                            sendToTaxiGroup(Long.valueOf(TAXI_GROUP_ID), temp, voyage);
-//        senderService.pinMessage(message.getChatId(), message.getMessageId());
-//        List<TaxiEntity> taxistsByVoyage = getTaxistsByVoyage(voyage);
-//        for (TaxiEntity taxi : taxistsByVoyage) {
-//            senderService.sendMainMenuAndGetExecuted(taxi.getChatId(), voyage.getAbout());
-//            senderService.pinMessage(taxi.getChatId(), messageId + 2);
-//        }
     }
 
     @Override
@@ -433,8 +424,7 @@ public class TaxiServiceImpl implements TaxiService {
                 .append("\n")
                 .append(status)
                 .append("\n")
-                .append("\n")
-                .append(Components.TIME + taxi.getDuration() + "kun");
+                .append("\n").append(Components.TIME).append(taxi.getDuration()).append("kun");
 
         sendPhoto.setCaption(String.valueOf(info));
         sendPhoto.setProtectContent(true);

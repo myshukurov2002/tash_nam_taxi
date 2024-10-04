@@ -45,8 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.company.components.Components.ILL_GET;
-import static com.company.components.Components.PROFILE_INFO;
+import static com.company.components.Components.*;
 
 @Component
 @RequiredArgsConstructor
@@ -355,8 +354,9 @@ public class SenderServiceImpl implements SenderService {
 
     @Override
     public Message sendToTaxiGroup(Long chatId, String data, VoyageEntity voyage) {
+
         SendMessage sendMessage = getSendMessage(chatId, data);
-        InlineKeyboardMarkup markup = getInlineKeyboardMarkup(ILL_GET, ILL_GET + "\n" + voyage.getId());
+        InlineKeyboardMarkup markup = getInlineKeyboardMarkup(ILL_GET, ILL_GET_BACK + "\n" + voyage.getId());
         sendMessage.setParseMode("html");
         sendMessage.enableHtml(true);
         sendMessage.setProtectContent(true);

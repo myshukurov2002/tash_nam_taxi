@@ -66,7 +66,7 @@ public class MessageHandler {
         UserEntity user = authService.getUserById(chatId);
         UserRole userRole = user.getUserRole();
 
-        if (callbackQuery.getData().startsWith(Components.ILL_GET)) {
+        if (callbackQuery.getData().startsWith(Components.ILL_GET_BACK)) {
 
             groupService.handleCallBackQuery(chatId, callbackQuery);
             return;

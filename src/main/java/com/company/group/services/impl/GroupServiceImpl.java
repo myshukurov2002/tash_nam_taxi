@@ -108,12 +108,12 @@ public class GroupServiceImpl implements GroupService {
 
                 senderService.forwardMessage(userId, messageId, TAXI_GROUP_ID);
 
-                Message executed = senderService
+                senderService
                         .sendMessage(chatId, Components.GROUP_ADS2 + "\n" + GROUP_LINK, getInlineButtonForGroup());
-            senderService.deleteMessage(chatId, message.getMessageId());
+                senderService.deleteMessage(chatId, message.getMessageId());
             return;
             }
-            Message executed = senderService
+            senderService
                     .sendMessage(chatId, Components.GROUP_ADS2 + "\n" + GROUP_LINK, getInlineButtonForGroup());
             senderService.deleteMessage(chatId, message.getMessageId());
         }
@@ -122,9 +122,12 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void handleCallBackQuery(Long chatId, CallbackQuery callbackQuery) {
 
-        System.out.println(callbackQuery.getData());
         Message message = callbackQuery.getMessage();
         Chat group = message.getChat();
+        Chat chat = message.getChat();
+        String text = message.getText();
+        String[] texts = message.getText()
+                .split("\n");
 
         String voyageId = callbackQuery
                 .getData()
@@ -134,39 +137,29 @@ public class GroupServiceImpl implements GroupService {
                 .getVoyage(Long.valueOf(voyageId));
 
         TaxiEntity taxi = taxiService.getById(chatId);
-        UserEntity userById = authService.getUserById(taxi.getChatId());
+        if (!taxi.getStatus()) {
+            return;
+        }
+        UserEntity userTaxi = authService.getUserById(taxi.getChatId());
 
-        if (taxi.getStatus()) {
-
-            String text = message.getText();
-            String[] texts = message.getText()
-                    .split("\n");
-//            String nameTaxi = "[" + userById.getFullName() + "](tg://user?id=" + chatId + ")";
-            Chat chat = message.getChat();
-            String firstName = chat.getFirstName();
-            String userName = chat.getUserName();
-            userById.setFullName(firstName);
-            userById.setUsername(userName);
-            authService.save(userById);
-
-            String nameTaxi = userById.getFullName();
+            String nameTaxi = userTaxi.getFullName();
 
             if (text.contains(nameTaxi) /*||
                 text.contains(userById.getFullName())*/) {
                 return;
             }
             String caption = text + "\n" + nameTaxi;
-            senderService.sendMenu(userById, voyage.getData());
-            InlineKeyboardMarkup markup = senderService.getInlineKeyboardMarkup(Components.ILL_GET, Components.ILL_GET + "\n" + voyageId);
+            senderService.sendMenu(userTaxi, voyage.getData());
+            InlineKeyboardMarkup markup = senderService
+                    .getInlineKeyboardMarkup(Components.ILL_GET, Components.ILL_GET_BACK + "\n" + voyageId);
 
-            if (texts.length <= 4) {
+            if (texts.length <= 5) {
                 senderService.editMessageMarkdown(group.getId(), message.getMessageId(), caption, markup);
             } else {
                 caption += "\n\n" + Components.IS_AGREE;
                 senderService.editMessage(group.getId(), message.getMessageId(), caption);
             }
 
-        }
     }
 
     private Long getTaxiChatIdForReply(Message message) {

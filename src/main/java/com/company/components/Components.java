@@ -35,6 +35,7 @@ public interface Components {
     String SHOULD_FILL = "❗\uFE0F Bu malumotlarni to'ldirmasdan keyingi qadamga o'ta olmaysiz!";
     String AFTER_APPROVE = "Akkauntingiz 30kun davomida Faol holatda ishlaydi ❗\uFE0F ";
     String ILL_GET = "\uD83D\uDE96 ZAKAS OLISH \uD83D\uDE96";
+    String ILL_GET_BACK = "ZAKAS";
 
     //GROUP
     String GROUP_ADS = "ZAKASLAR FAQAT BOT ORQALI QABUL QILINADI!!! \n\n Shafyor e'lonlari faqat bot orqali beriladi!";
