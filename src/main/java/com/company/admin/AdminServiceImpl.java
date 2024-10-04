@@ -151,6 +151,9 @@ public class AdminServiceImpl implements AdminService {
                 case AdminComponents.STATISTICS -> {
                     getStatistics(adminId);
                 }
+                case AdminComponents.GEt_USER -> {
+                    getUser(adminId, words[1]);
+                }
                 default -> {
                     senderService.sendMessage(adminId, AdminComponents.COMMANDS);
                 }
@@ -160,6 +163,13 @@ public class AdminServiceImpl implements AdminService {
             log.error(e.getMessage());
             senderService.sendMessage(adminId, "<code>" + e.getMessage() + "</code>");
         }
+    }
+
+    private void getUser(Long adminId, String word) {
+        UserEntity user = authService
+                .getUserById(Long.valueOf(word));
+
+        senderService.sendMessage(adminId, String.valueOf(user));
     }
 
     private int executeBDCommand(Long adminId, String sql) {

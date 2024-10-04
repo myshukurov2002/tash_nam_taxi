@@ -93,6 +93,10 @@ public class GroupServiceImpl implements GroupService {
         }
         if (!isUserAdmin(chatId, userId)) {
 
+            if (!message.hasText()) {
+                senderService.deleteMessage(chatId, messageId);
+                return;
+            }
             String text = message.getText();
             if (message.getText().length() > 30) {
                 senderService

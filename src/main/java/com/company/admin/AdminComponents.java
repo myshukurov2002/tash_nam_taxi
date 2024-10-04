@@ -59,4 +59,5 @@ public interface AdminComponents {
     String BAN_USER = "/ban-user";
     String EXECUTE = "/execute";
     String UNBAN_USER = "/unban-user";
+    String GEt_USER = "/get-user";
 }
