@@ -149,18 +149,17 @@ public class GroupServiceImpl implements GroupService {
                 return;
             }
             String caption = text + "\n" + nameTaxi;
-            senderService.sendMenu(userTaxi, voyage.getData());
+
             InlineKeyboardMarkup markup = senderService
                     .getInlineKeyboardMarkup(Components.ILL_GET, Components.ILL_GET_BACK + "\n" + voyageId);
 
-            if (texts.length <= 5) {
                 senderService.editMessageMarkdown(group.getId(), message.getMessageId(), caption, markup);
                 senderService.sendMenu(userTaxi, voyage.getData());
-            } else {
+
+                if (texts.length == 5){
                 caption += "\n\n" + Components.IS_AGREE;
                 senderService.editMessage(group.getId(), message.getMessageId(), caption);
             }
-
     }
 
     private Long getTaxiChatIdForReply(Message message) {
