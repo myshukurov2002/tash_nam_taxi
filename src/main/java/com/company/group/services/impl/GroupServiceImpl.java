@@ -97,25 +97,25 @@ public class GroupServiceImpl implements GroupService {
                 senderService.deleteMessage(chatId, messageId);
                 return;
             }
-            String text = message.getText();
-            if (message.getText().length() > 30) {
-                senderService
-                        .sendMessage(chatId, Components.ATTENTION_TAXIST + "\n" + GROUP_LINK, getInlineButtonOrderForGroup(Components.CALL_BOT, BOT_URL));
+//            String text = message.getText();
+//            if (message.getText().length() > 30) {
+//                senderService
+//                        .sendMessage(chatId, Components.ATTENTION_TAXIST + "\n" + GROUP_LINK, getInlineButtonOrderForGroup(Components.CALL_BOT, BOT_URL));
 //                senderService.deleteMessage(chatId, message.getMessageId());
-                return;
-
-            } else if(groupCircular.checkKeyWord(text.toLowerCase())) {
-
-                senderService.forwardMessage(userId, messageId, TAXI_GROUP_ID);
-
-                senderService
-                        .sendMessage(chatId, Components.GROUP_ADS2 + "\n" + GROUP_LINK, getInlineButtonForGroup());
-                senderService.deleteMessage(chatId, message.getMessageId());
-            return;
-            }
-            senderService
-                    .sendMessage(chatId, Components.GROUP_ADS2 + "\n" + GROUP_LINK, getInlineButtonForGroup());
-            senderService.deleteMessage(chatId, message.getMessageId());
+//                return;
+//
+//            } else if(groupCircular.checkKeyWord(text.toLowerCase())) {
+//
+//                senderService.forwardMessage(userId, messageId, TAXI_GROUP_ID);
+//
+//                senderService
+//                        .sendMessage(chatId, Components.GROUP_ADS2 + "\n" + GROUP_LINK, getInlineButtonForGroup());
+//                senderService.deleteMessage(chatId, message.getMessageId());
+//            return;
+//            }
+//            senderService
+//                    .sendMessage(chatId, Components.GROUP_ADS2 + "\n" + GROUP_LINK, getInlineButtonForGroup());
+//            senderService.deleteMessage(chatId, message.getMessageId());
         }
     }
 

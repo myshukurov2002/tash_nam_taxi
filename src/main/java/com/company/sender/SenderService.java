@@ -107,4 +107,6 @@ public interface SenderService {
     InlineKeyboardButton getInlineUrlButton(String botAds, String botUrl);
 
     void sendLongMessage(Long chatId, String s);
+
+    ReplyKeyboardMarkup getTaxiMenu();
 }

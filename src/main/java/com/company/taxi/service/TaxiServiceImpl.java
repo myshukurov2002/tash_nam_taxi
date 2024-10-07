@@ -341,27 +341,7 @@ public class TaxiServiceImpl implements TaxiService {
     }
 
     public ReplyKeyboardMarkup getMenu() {
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> rows = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-
-//        row.add(Components.GIVE_ADD);
-        row.add(PROFILE_INFO);
-        row.add(Components.MAIN_MENU);
-
-        rows.add(row);
-        row = new KeyboardRow();
-
-        row.add(Components.CONNECT_ADMIN);
-        rows.add(row);
-
-        replyKeyboardMarkup.setResizeKeyboard(true);
-//        replyKeyboardMarkup.setOneTimeKeyboard(true);
-//        replyKeyboardMarkup.setSelective(true);
-//        replyKeyboardMarkup.setIsPersistent(true);
-        replyKeyboardMarkup.setKeyboard(rows);
-
-        return replyKeyboardMarkup;
+        return senderService.getTaxiMenu();
     }
 
     private InlineKeyboardMarkup getApproveInlineButtons(String taxiId) {
