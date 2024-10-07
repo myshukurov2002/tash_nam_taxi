@@ -117,6 +117,7 @@ public class GroupServiceImpl implements GroupService {
 //                    .sendMessage(chatId, Components.GROUP_ADS2 + "\n" + GROUP_LINK, getInlineButtonForGroup());
 //            senderService.deleteMessage(chatId, message.getMessageId());
         }
+
     }
 
     @Override
