@@ -97,14 +97,14 @@ public class GroupServiceImpl implements GroupService {
                 senderService.deleteMessage(chatId, messageId);
                 return;
             }
-//            String text = message.getText();
-//            if (message.getText().length() > 30) {
-//                senderService
-//                        .sendMessage(chatId, Components.ATTENTION_TAXIST + "\n" + GROUP_LINK, getInlineButtonOrderForGroup(Components.CALL_BOT, BOT_URL));
+            String text = message.getText();
+            if (message.getText().length() > 30) {
+                senderService
+                        .sendMessage(chatId, Components.ATTENTION_TAXIST + "\n" + GROUP_LINK, getInlineButtonOrderForGroup(Components.CALL_BOT, BOT_URL));
 //                senderService.deleteMessage(chatId, message.getMessageId());
-//                return;
-//
-//            } else if(groupCircular.checkKeyWord(text.toLowerCase())) {
+                return;
+            }
+//            else if(groupCircular.checkKeyWord(text.toLowerCase())) {
 //
 //                senderService.forwardMessage(userId, messageId, TAXI_GROUP_ID);
 //

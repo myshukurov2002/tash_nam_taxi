@@ -131,4 +131,5 @@ public interface Components {
     String ATTENTION_TAXIST = "❗\uFE0F E'LON BERISH faqat bot orqali amalga oshiriladi!";
 
     String CALL_BOT = "\uD83D\uDE96 E'LON BERISH \uD83D\uDE96";
+    String TAXI_PROFILE = "\uD83D\uDE96 Haydovchi Profili \uD83D\uDE96";
 }

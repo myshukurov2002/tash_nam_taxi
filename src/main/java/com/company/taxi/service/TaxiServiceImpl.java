@@ -27,7 +27,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +72,7 @@ public class TaxiServiceImpl implements TaxiService {
             case START -> {
 //                senderService.sendMessage(chatId, TAXI_START);
                 senderService.sendMessage(chatId, CAR_PHOTO);
-                senderService.sendImage(chatId,Components.CAR_IMG_PATH);
+                senderService.sendImage(chatId, Components.CAR_IMG_PATH);
 
                 taxi.setTaxiState(TaxiState.CAR_PHOTO);
                 taxiRepository.save(taxi);
@@ -154,7 +153,7 @@ public class TaxiServiceImpl implements TaxiService {
                 }
             }
             case GIVE_ADD -> {
-                sendAds(taxi, message);
+                sendAds(user, message);
                 taxi.setTaxiState(TaxiState.TAXI_REGISTRATION_DONE);
                 save(taxi);
                 senderService.sendMessage(taxi.getChatId(), SUCCESS, getMenu());
@@ -187,38 +186,41 @@ public class TaxiServiceImpl implements TaxiService {
         }
     }
 
-    private void sendAds(TaxiEntity taxi, Message message) {
+    private void sendAds(UserEntity user, Message message) {
 
         groupCircularImpl
                 .getAll()
                 .forEach(group -> {
 
-            SendPhoto sendPhoto = attachService.getSendPhoto(taxi.getChatId());
+                    SendPhoto sendPhoto = attachService.getSendPhoto(user.getChatId());
 
-            sendPhoto.setChatId(group.getGroupId());
-            sendPhoto.setCaption(String.valueOf(message.getText()));
-            sendPhoto.setProtectContent(true);
-            sendPhoto.setReplyMarkup(getAds());
-            senderService.sendPhoto(sendPhoto);
-        });
+                    sendPhoto.setChatId(group.getGroupId());
+                    sendPhoto.setCaption(String.valueOf(message.getText()));
+                    sendPhoto.setProtectContent(true);
+                    sendPhoto.setReplyMarkup(getAds(user));
+                    senderService.sendPhoto(sendPhoto);
+                });
     }
 
-    private ReplyKeyboard getAds() {
+    private ReplyKeyboard getAds(UserEntity user) {
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row = new ArrayList<>();
-        InlineKeyboardButton client = senderService.getInlineUrlButton(Components.BOT_ADS, BOT_URL);
-//        InlineKeyboardButton taxi = senderService.getInlineButton(BE_TAXI, BOT_URL);
+        if (user.getUsername() != null) {
+            InlineKeyboardButton taxi = senderService
+                    .getInlineUrlButton(Components.TAXI_PROFILE, TELEGRAM_LINK + user.getUsername());
+            row.add(taxi);
+            rows.add(row);
+            row = new ArrayList<>();
+        }
+
+        InlineKeyboardButton client = senderService
+                .getInlineUrlButton(Components.BOT_ADS, BOT_URL);
         row.add(client);
         rows.add(row);
-
-        //TODO
-        row = new ArrayList<>();
-//        row.add(taxi);
-        rows.add(row);
         markup.setKeyboard(rows);
-//
+
         return markup;
     }
 
@@ -320,7 +322,7 @@ public class TaxiServiceImpl implements TaxiService {
 //                Message message = senderService.
 //                            sendMessage(Long.valueOf(TAXI_GROUP_ID), voyage.getData());
         Message message = senderService.
-                            sendToTaxiGroup(Long.valueOf(TAXI_GROUP_ID), temp, voyage);
+                sendToTaxiGroup(Long.valueOf(TAXI_GROUP_ID), temp, voyage);
         senderService.pinMessage(message.getChatId(), message.getMessageId());
     }
 
