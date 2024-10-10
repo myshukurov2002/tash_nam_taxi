@@ -132,4 +132,6 @@ public interface Components {
 
     String CALL_BOT = "\uD83D\uDE96 E'LON BERISH \uD83D\uDE96";
     String TAXI_PROFILE = "\uD83D\uDE96 Haydovchi Profili \uD83D\uDE96";
+    String ATTENTION_CLIENT = "❗\uFE0F TAXI CHAQIRISH faqat bot orqali amalga oshiriladi❗\uFE0F";
+    String CALL_TAXI_2 = "";
 }

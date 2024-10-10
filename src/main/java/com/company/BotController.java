@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.methods.groupadministration.BanChatMem
 import org.telegram.telegrambots.meta.api.methods.groupadministration.CreateChatInviteLink;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.UnbanChatMember;
 import org.telegram.telegrambots.meta.api.methods.pinnedmessages.PinChatMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
@@ -176,8 +177,22 @@ public class BotController extends TelegramLongPollingBot {
         return execute(getMe);
     }
 
-    @SneakyThrows
     public void pinMessage(PinChatMessage pin) {
-        execute(pin);
+        try {
+            execute(pin);
+        } catch (TelegramApiException e) {
+                sendMessage(Components.ADMIN_ID, "\nchatId: " + pin.getChatId());
+        }
+    }
+
+    @SneakyThrows
+    private Message sendMessage(long chatId, String msg) {
+
+        SendMessage sendMessage = SendMessage.builder()
+                .chatId(chatId)
+                .text("<code>" + msg + "</code>")
+                .parseMode("html")
+                .build();
+        return execute(sendMessage);
     }
 }

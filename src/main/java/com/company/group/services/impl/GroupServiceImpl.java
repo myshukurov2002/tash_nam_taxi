@@ -57,7 +57,7 @@ public class GroupServiceImpl implements GroupService {
         Long chatId = chat.getId();
         Long userId = message.getFrom().getId();
         Integer messageId = message.getMessageId();
-        System.out.println(chatId);
+        System.out.println("group" + chatId);
         if (chatId.equals(TAXI_GROUP_ID)) {
 
 //           if (message.isReply()) {
@@ -75,12 +75,12 @@ public class GroupServiceImpl implements GroupService {
 
         groupCircular.isExist(chatId);
 
-        if (taxiService.existsById(userId)) {
-            TaxiEntity taxi = taxiService.getById(userId);
-            if (taxi.getStatus()) {
-                return;
-            }
-        }
+//        if (taxiService.existsById(userId)) {
+//            TaxiEntity taxi = taxiService.getById(userId);
+//            if (taxi.getStatus()) {
+//                return;
+//            }
+//        }TODO
 
         if (message.isCommand()) {
             String text = message.getText();
@@ -100,7 +100,7 @@ public class GroupServiceImpl implements GroupService {
             String text = message.getText();
             if (message.getText().length() > 30) {
                 senderService
-                        .sendMessage(chatId, Components.ATTENTION_TAXIST + "\n" + GROUP_LINK, getInlineButtonOrderForGroup(Components.CALL_BOT, BOT_URL));
+                        .sendMessage(chatId, Components.ATTENTION_CLIENT + "\n" + GROUP_LINK, getInlineButtonOrderForGroup(Components.GROUP_LINK, BOT_URL));
 //                senderService.deleteMessage(chatId, message.getMessageId());
                 return;
             }
