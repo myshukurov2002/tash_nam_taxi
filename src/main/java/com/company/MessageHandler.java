@@ -42,13 +42,13 @@ public class MessageHandler {
         }
 
         if (message.getFrom().getUserName() != null &&
-            user.getUsername() == null) {
+                user.getUsername() == null) {
             user.setUsername(message.getFrom().getUserName());
             authService.save(user);
         }
 
         if (message.isCommand() &&
-             user.getUserState().equals(UserState.USER_TYPE) ) {
+                user.getUserState().equals(UserState.USER_TYPE)) {
             commandService(user, message);
             return;
         }
@@ -92,29 +92,30 @@ public class MessageHandler {
             senderService.sendMessage(user.getChatId(), Components.SHOULD_FILL);
         }
         switch (command) {
-//            case "/start": {
-//                getMenu(user, message, chatId);
-//            }
-            case "/statistics": {
-                getMenu(user, message, chatId);
-            }
-            case "/help": {
-                Chat chat = message.getChat();
-                String firstName = chat.getFirstName();
-                String userName = chat.getUserName();
-                user.setFullName(firstName);
-                user.setUsername(userName);
-                user.setUserState(UserState.USER_TYPE);
-                authService.save(user);
-                senderService.sendMessage(chatId, Components.HELP);
-                senderService.sendMessage(chatId, Components.HELP_2, senderService.getGroupUrl());
-            }
-            case "/menu": {
-                if (user.getUserState().equals(UserState.USER_TYPE) ||
-                    user.getUserState().equals(UserState.REGISTRATION_DONE))
+            case "/start" -> getMenu(user, message, chatId);
+            case "/stats" -> adminService.getStatistics(chatId);
+            case "/help" -> getHelp(chatId, message.getChat(), user);
+            case "/menu" -> {
+                if (hasRegistered(user))
                     senderService.askUserType(chatId, Components.MAIN_MENU);
             }
         }
+    }
+
+    private boolean hasRegistered(UserEntity user) {
+        return user.getUserState().equals(UserState.USER_TYPE) ||
+                user.getUserState().equals(UserState.REGISTRATION_DONE);
+    }
+
+    private void getHelp(Long chatId, Chat chat, UserEntity user) {
+        String firstName = chat.getFirstName();
+        String userName = chat.getUserName();
+        user.setFullName(firstName);
+        user.setUsername(userName);
+        user.setUserState(UserState.USER_TYPE);
+        authService.save(user);
+        senderService.sendMessage(chatId, Components.HELP);
+        senderService.sendMessage(chatId, Components.HELP_2, senderService.getGroupUrl());
     }
 
     private void getMenu(UserEntity user, Message message, Long chatId) {

@@ -13,4 +13,5 @@ public interface AdminService {
     void init();
     void initCommands();
     void banTaxi(Long taxiId);
+    public void getStatistics(Long chatId);
 }

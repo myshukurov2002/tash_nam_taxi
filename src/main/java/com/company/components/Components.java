@@ -90,7 +90,7 @@ public interface Components {
     String VOYAGES = "\uD83D\uDE95 Tarix";
     String WAIT_TAXI = "\uD83D\uDE96 Taksist javobini kuting";
     String CLIENT_MENU = "\uD83D\uDE42 Menyu";
-    String CALL_TAXI = "\uD83D\uDE96 Taxi Xizmati";
+    String CALL_TAXI = "\uD83D\uDE96 TAKSI XIZMATI";
 
     String PEOPLE_OR_POSTAGE = "\uD83D\uDC68\u200D\uD83D\uDC68\u200D\uD83D\uDC67\u200D\uD83D\uDC67 Yo'lovchi yoki \uD83D\uDCE6 Pochta?";
     String SELECTED_2_REGIONS = "\uD83D\uDCCD Qayerdan Qayerga Borishizni kiritib bo'ldingiz. 🟢 Keyingini Tanlang";
@@ -105,7 +105,7 @@ public interface Components {
     String A_FOUR = "4\uFE0F⃣ kishi bor";
     String PERSON_OR_POSTAGE = "Yo'lovchi yoki Pochta ❓";
     String YES = "✅ HA";
-    String NO = "❌ Yo'q";
+    String NO = "❌ YO'Q";
     String IS_CORRECT = "Barcha Malumotlar To'g'rimi?";
     String EXCEPTION_OCCURED = "⁉\uFE0F Xatolik Sodir bo'ldi! Iltimos Qaytdan Urinib Ko'ring!";
     String TELEGRAM_LINK = "https://t.me/";
@@ -124,14 +124,13 @@ public interface Components {
     String GIVE_ADD = "\uD83D\uDCCC E'LON BERISH";
     String TAXI_ADS_EXAMPLE = "Assalomu aleykum\n Namangandan Toshkentga\n soat 02:00da yuramiz\n 2kishi srochni kerak!\n...";
     String TAXI_ADS = "E'loningizni quyidagiga o'xshab to'ldirishingiz mumkin!";
-    String BOT_ADS = "\uD83D\uDE96 Zakas Berish \uD83D\uDE96";
+    String BOT_ADS = "\uD83D\uDE96 ZAKAS BERISH \uD83D\uDE96";
     String BE_TAXI = "\uD83D\uDE96 Taksi sifatida ishlash \uD83D\uDE96";
     String ATTENTION_ALL_TAXIST_1 = "SHAFYORLAR DIQQATIGA❗\uFE0F - E'lonlarni Bot Orqali Bering❗\uFE0F\n YO'LOVCHILAR DIQQATIGA❗\uFE0F - Barcha Turdagi Zakaslar Faqat Bot Orqali Qabul Qilinadi❗\uFE0F";
     String ATTENTION_ALL_TAXIST_2 = "\uFE0F\n YO'LOVCHILAR DIQQATIGA❗\uFE0F - Barcha Turdagi Zakaslar Faqat Bot Orqali Qabul Qilinadi❗\uFE0F";
     String ATTENTION_TAXIST = "❗\uFE0F E'LON BERISH faqat bot orqali amalga oshiriladi!";
 
     String CALL_BOT = "\uD83D\uDE96 E'LON BERISH \uD83D\uDE96";
-    String TAXI_PROFILE = "\uD83D\uDE96 Haydovchi Profili \uD83D\uDE96";
-    String ATTENTION_CLIENT = "❗\uFE0F TAXI CHAQIRISH faqat bot orqali amalga oshiriladi❗\uFE0F";
-    String CALL_TAXI_2 = "";
+    String TAXI_PROFILE = "\uD83D\uDE96 HAYDOVCHI PROFILI \uD83D\uDE96";
+    String ATTENTION_CLIENT = "❗\uFE0F TAKSI CHAQIRISH faqat bot orqali amalga oshiriladi❗\uFE0F";
 }

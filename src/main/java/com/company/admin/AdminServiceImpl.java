@@ -346,14 +346,15 @@ public class AdminServiceImpl implements AdminService {
         senderService.sendMessage(taxiId, AdminComponents.ENTER_THE_GROUP + getInviteLink());
     }
 
-    private void getStatistics(Long adminId) {
+    @Override
+    public void getStatistics(Long chatId) {
 
         String builder = "\n" + "Users: " + authService.count() +
                 "\n" + "Clients: " + clientService.count() +
                 "\n" + "Taxists: " + taxiService.count() +
                 "\n" + "Voyages: " + clientService.countVoyages();
 
-        senderService.sendMessage(adminId, builder);
+        senderService.sendMessage(chatId, builder);
     }
 
     private void banUser(Long adminId, String userPhone) {
